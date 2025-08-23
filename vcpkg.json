@@ -1,9 +1,10 @@
 {
     "name":  "swiftpotion-ng",
-    "version-string":  "1.0.0",
+    "version-string":  "2.5.0",
     "description":  "",
     "license":  "MIT",
     "dependencies":  [
+                         "simpleini",
                          "spdlog"
                      ],
     "features":  {

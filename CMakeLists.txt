@@ -13,7 +13,7 @@ include(GNUInstallDirs)
 # info
 project(
 	SwiftPotion-NG
-	VERSION 1.0.0
+	VERSION 2.5.0
 	LANGUAGES CXX
 )
 
