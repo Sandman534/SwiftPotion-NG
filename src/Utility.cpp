@@ -59,9 +59,9 @@ void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
 
         // Other Effects
 		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Disease.EffectName.c_str()) == 0 && settings->Cure_Disease.Stopper) {
-			settings->Stamina_Restore.Stopper = false;
+			settings->Cure_Disease.Stopper = false;
 		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Poison.EffectName.c_str()) == 0 && settings->Cure_Poison.Stopper) {
-			settings->Stamina_Regen.Stopper = false;
+			settings->Cure_Poison.Stopper = false;
         }
     };
 }

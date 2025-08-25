@@ -1,13 +1,11 @@
 ﻿#include "Events.h"
 #include "FormLoader.h"
 #include "Hooks.h"
-#include "Papyrus.h"
 #include "Serialization.h"
-
+#include "SPUI.h"
 #include <stddef.h>
 
 using namespace RE::BSScript;
-using namespace SwiftPotionExtension;
 using namespace SKSE;
 using namespace SKSE::log;
 using namespace SKSE::stl;
@@ -37,7 +35,6 @@ void InitListener(SKSE::MessagingInterface::Message* a_msg)
 	case SKSE::MessagingInterface::kDataLoaded:
 		FormLoader::GetSingleton()->LoadAllForms();
 		settings->LoadSettings();
-
 		break;
 	}
 }
@@ -67,12 +64,7 @@ SKSEPluginLoad(const LoadInterface* skse)
 		serialization->SetRevertCallback(&Serialization::RevertCallback);
 	}
 
-	// Papyrus
-	if (GetPapyrusInterface()->Register(SwiftPotionExtension::RegisterSwiftPotion))
-		logger::debug("Papyrus functions bound.");
-	else
-		stl::report_and_fail("Failure to register Papyrus bindings.");
-
 	logger::info("{} has finished loading.", Plugin::NAME);
+	SPUI::Register();
 	return true;
 }

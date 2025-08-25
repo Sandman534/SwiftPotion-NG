@@ -35,8 +35,10 @@ void Settings::LoadSettings() {
 	// Set additional effects
 	Cure_Disease.EffectName = CureDiseaseName;
 	Cure_Disease.Enabled = false;
+	Cure_Disease.Attribute = 0;
 	Cure_Poison.EffectName = CurePoisonName;
 	Cure_Poison.Enabled = false;
+	Cure_Poison.Attribute = 1;
 
 	// Load INI Settings
 	LoadINI();

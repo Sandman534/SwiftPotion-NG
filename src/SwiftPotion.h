@@ -17,7 +17,7 @@ class SwiftPotion {
         static void SwiftPotionLoopUpdate();
         static void AutoSystemCheck(PotionData &SystemData);
         static bool AutoSystemEffectCheck(std::string sEffect);
-        static bool CheckSpecificEffects(int iCheckType);
+        static void ExtraEffectCheck(PotionData &optionalData);
         static void UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey);
         static void UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreData, PotionData &RegenData, PotionData &FortifyData, std::string EffectName);
         static RE::AlchemyItem* GetPotion(RE::Actor* aPlayer, PotionData &SystemData);

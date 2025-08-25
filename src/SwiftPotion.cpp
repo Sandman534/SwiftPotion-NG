@@ -45,10 +45,8 @@ void SwiftPotion::SwiftPotionLoopUpdate() {
         AutoSystemCheck(settings->Stamina_Fortify);
 
         // Specific Monitoring
-        if (settings->Cure_Disease.Enabled && !settings->Cure_Disease.Stopper && CheckSpecificEffects(0))
-            UsePotion(utility->GetPlayer(), settings->Cure_Disease, false);
-        if (settings->Cure_Poison.Enabled && !settings->Cure_Poison.Stopper && CheckSpecificEffects(1))
-            UsePotion(utility->GetPlayer(), settings->Cure_Poison, false);
+		ExtraEffectCheck(settings->Cure_Disease);
+        ExtraEffectCheck(settings->Cure_Poison);
     }
 }
 
@@ -71,14 +69,8 @@ bool SwiftPotion::AutoSystemEffectCheck(std::string sEffect) {
     auto utility = Utility::GetSingleton();
     RE::Actor* aPlayer = Utility::GetPlayer();
 
-    // Get EditorID from Effect String
-    // effectEID = GetEffectEID(sEffect)
-
     // Check to see if the player has the effect listed
     for (auto& eEffect : *aPlayer->AsMagicTarget()->GetActiveEffectList()) {
-        //if (strcmpi(eEffect->GetBaseObject()->GetFormEditorID(),effectEID.c_str()) == 0 && eEffect->GetBaseObject()->HasKeyword(utility->positiveKeyword)
-
-
         if (strcmpi(eEffect->GetBaseObject()->GetFullName(),sEffect.c_str()) == 0 && eEffect->GetBaseObject()->HasKeyword(utility->positiveKeyword))
             return true;
     }
@@ -86,19 +78,27 @@ bool SwiftPotion::AutoSystemEffectCheck(std::string sEffect) {
     return false;
 }
 
-bool SwiftPotion::CheckSpecificEffects(int iCheckType) {
+void SwiftPotion::ExtraEffectCheck(PotionData &optionalData) {
     auto utility = Utility::GetSingleton();
     RE::Actor* aPlayer = Utility::GetPlayer();
 
+    // Return if no data found
+    if (!optionalData.Enabled || optionalData.Stopper) return;
+  
     // Check to see if the player has the effect listed
     for (auto& eEffect : *aPlayer->AsMagicTarget()->GetActiveEffectList()) {
-        if (iCheckType == 0 && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kDisease)
-            return true;
-        else if (iCheckType == 1 && eEffect->GetBaseObject()->data.resistVariable == RE::ActorValue::kPoisonResist)
-            return true;
+		if (optionalData.Attribute == 0) {
+			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kDisease) {
+				UsePotion(utility->GetPlayer(), optionalData, false);
+				break;
+			}
+		} else if (optionalData.Attribute == 1) {
+			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kPoison) {
+				UsePotion(utility->GetPlayer(), optionalData, false);
+				break;
+			}
+		}
     }
-
-    return false;
 }
 
 void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3) {
@@ -123,7 +123,7 @@ void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _mo
 void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey) {
 	// Setup constants
     auto utility = Utility::GetSingleton();
-    auto settings = Settings::GetSingleton();
+    auto settings = Settings::GetSingleton();   
 
     // Get the correct effect list based on type
 	RE::AlchemyItem* pPotion = GetPotion(aPlayer, SystemData);
