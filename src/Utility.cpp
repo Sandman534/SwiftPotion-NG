@@ -118,27 +118,25 @@ bool Utility::PlayerIsAlive() {
 }
 
 float Utility::GetPlayerAttribute(int iAttribute) {
-    RE::ActorValue workingValue;
-    if (iAttribute == 0)
-        workingValue = RE::ActorValue::kHealth;
-    else if (iAttribute == 1)
-        workingValue = RE::ActorValue::kMagicka;
-    else
-        workingValue = RE::ActorValue::kStamina;
+    const RE::ActorValue actorValues[] = {
+        RE::ActorValue::kHealth,
+        RE::ActorValue::kMagicka,
+        RE::ActorValue::kStamina
+    };
+    RE::ActorValue workingValue = (iAttribute >= 0 && iAttribute < 3) ? actorValues[iAttribute] : RE::ActorValue::kHealth;
     
     return GetPlayer()->AsActorValueOwner()->GetActorValue(workingValue) / (GetPlayer()->AsActorValueOwner()->GetPermanentActorValue(workingValue) +
         GetPlayer()->As<RE::Actor>()->GetActorValueModifier(RE::ACTOR_VALUE_MODIFIER::kTemporary, workingValue));
 }
 
 float Utility::GetPlayerDifference(int iAttribute) {
-    RE::ActorValue workingValue;
-    if (iAttribute == 0)
-        workingValue = RE::ActorValue::kHealth;
-    else if (iAttribute == 1)
-        workingValue = RE::ActorValue::kMagicka;
-    else
-        workingValue = RE::ActorValue::kStamina;
+    const RE::ActorValue actorValues[] = {
+        RE::ActorValue::kHealth,
+        RE::ActorValue::kMagicka,
+        RE::ActorValue::kStamina
+    };
+    RE::ActorValue workingValue = (iAttribute >= 0 && iAttribute < 3) ? actorValues[iAttribute] : RE::ActorValue::kHealth;
 
-    return (GetPlayer()->AsActorValueOwner()->GetPermanentActorValue(workingValue) +
+    return (GetPlayer()->AsActorValueOwner()->GetPermanentActorValue(workingValue) + 
         GetPlayer()->As<RE::Actor>()->GetActorValueModifier(RE::ACTOR_VALUE_MODIFIER::kTemporary, workingValue)) - GetPlayer()->AsActorValueOwner()->GetActorValue(workingValue);
 }

@@ -55,13 +55,23 @@ void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
 
     // Run check for potion use
     if (SystemData.Enabled && !SystemData.Stopper) {
-        if (utility->GetPlayerAttribute(SystemData.Attribute) <= SystemData.Threshold) {
-            if ((SystemData.CombatOnly && utility->GetPlayer()->IsInCombat()) || !SystemData.CombatOnly) {
-                if (!AutoSystemEffectCheck(SystemData.EffectName)) {
-                    UsePotion(utility->GetPlayer(), SystemData, false);
-                }
-            }
-        }
+
+        // Check for Over Encumbrance
+        if ((SystemData.Attribute == 2 && !utility->GetPlayer()->IsOverEncumbered()) || SystemData.Attribute != 2) {
+			
+            // Is our attribute below the required threshold
+            if (utility->GetPlayerAttribute(SystemData.Attribute) <= SystemData.Threshold) {
+
+                // Is the player in combat, or does combat no matter
+				if ((SystemData.CombatOnly && utility->GetPlayer()->IsInCombat()) || !SystemData.CombatOnly) {
+
+                    // Does the player have the required effect in their inventory
+					if (!AutoSystemEffectCheck(SystemData.EffectName)) {
+						UsePotion(utility->GetPlayer(), SystemData, false);
+					}
+				}
+			}
+		}
     }
 }
 
