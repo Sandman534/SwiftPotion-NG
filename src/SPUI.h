@@ -9,8 +9,6 @@ namespace SPUI {
 
     // Static Variables
     static std::vector<bool> waitKeys(30, false);
-    //static std::vector<std::string> effectsPositive = Settings::GetSingleton()->Positive_Effects;
-    //static std::vector<std::string> effectsNegative = Settings::GetSingleton()->Negative_Effects;
     static std::vector<std::string> effectTypes = { "Highest", "Lowest", "Optimal" };
     static std::vector<std::string> hotkeyTypes = { "Highest", "Lowest" };
     static std::vector<RE::BSKeyboardDevice::Key> modifierKeys = { 
@@ -31,8 +29,8 @@ namespace SPUI {
     void __stdcall RenderEffectHotkeys();
 
     // Additional Functions
-    void AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category);
-    void DrawHotkeyUI(const char* header, int& hotkey, int waitIndex);
+    bool AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category);
+    bool DrawHotkeyUI(const char* header, int& hotkey, int waitIndex);
     int modifierKeySwap(int idCode);
     int ImGuiKeyToIDCode(ImGuiKey key);
 	ImGuiKey IDCodeToImGuiKey(int idCode);

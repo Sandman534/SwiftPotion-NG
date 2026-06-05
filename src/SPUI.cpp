@@ -17,26 +17,48 @@ void SPUI::Register() {
 
 void __stdcall SPUI::RenderSettings()
 {
+	bool optionsChanges = false;
 	Settings* spSettings = Settings::GetSingleton();
 	PotionData& pdCureDisease = Settings::GetSingleton()->Cure_Disease;
 	PotionData& pdCurePoison = Settings::GetSingleton()->Cure_Poison;
 
 	if (CollapsingHeader("General Options", ImGuiTreeNodeFlags_DefaultOpen)) {
-		Checkbox("Enable Auto System", &spSettings->SPNG_Enabled);
-		Checkbox("Hotkey Notifications", &spSettings->SPNG_Notifications);
-		Checkbox("Persistant Effect Hotkeys", &spSettings->SPNG_HotkeyFile);
+		if (Checkbox("Enable Auto System", &spSettings->SPNG_Enabled))
+			optionsChanges = true;
+		if (Checkbox("Hotkey Notifications", &spSettings->SPNG_Notifications))
+			optionsChanges = true;
+		if (Checkbox("Persistant Effect Hotkeys", &spSettings->SPNG_HotkeyFile))
+			optionsChanges = true;
+
+		// Show Save and Load buttons for Hotkey File
+		SameLine();
+		if (Button("Save Hotkey File")) 
+			spSettings->SaveHotkeyINI();
+		SameLine();
+		if (Button("Load Hotkey File"))
+			spSettings->LoadHotkeyINI();
 	}
 
 	if (CollapsingHeader("Additional Auto Options", ImGuiTreeNodeFlags_DefaultOpen)) {
-		Checkbox("Cure Disease", &pdCureDisease.Enabled);
-		Checkbox("Cure Poison", &pdCurePoison.Enabled);
+		if (Checkbox("Cure Disease", &pdCureDisease.Enabled))
+			optionsChanges = true;
+		if (Checkbox("Cure Poison", &pdCurePoison.Enabled))
+			optionsChanges = true;
 	}
 
 	if (CollapsingHeader("Modifier Keys", ImGuiTreeNodeFlags_DefaultOpen)) {
-		DrawHotkeyUI("Modifier Key 1", spSettings->SPNG_Modifier1, 0);
-		DrawHotkeyUI("Modifier Key 2", spSettings->SPNG_Modifier2, 1);
-		DrawHotkeyUI("Modifier Key 3", spSettings->SPNG_Modifier3, 2);
+		if (DrawHotkeyUI("Modifier Key 1", spSettings->SPNG_Modifier1, 0))
+			optionsChanges = true;
+		if (DrawHotkeyUI("Modifier Key 2", spSettings->SPNG_Modifier2, 1))
+			optionsChanges = true;
+		if (DrawHotkeyUI("Modifier Key 3", spSettings->SPNG_Modifier3, 2))
+			optionsChanges = true;
 	}
+
+	// Save the settings
+	if (optionsChanges) {
+		Settings::GetSingleton()->SaveINI();
+	}	
 }
 
 void __stdcall SPUI::RenderAutoHealth() {
@@ -44,27 +66,40 @@ void __stdcall SPUI::RenderAutoHealth() {
 	PotionData& pdRegen = Settings::GetSingleton()->Health_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Health_Fortify;
 
+	bool optionsChanges = false;
 	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 3);
-		Checkbox("Modifier 1", &pdRestore.Modifier1);
-		Checkbox("Modifier 2", &pdRestore.Modifier2);
-		Checkbox("Modifier 3", &pdRestore.Modifier3);
+		if (DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 3))
+			optionsChanges = true;
+		if (Checkbox("Modifier 1", &pdRestore.Modifier1))
+			optionsChanges = true;
+		if (Checkbox("Modifier 2", &pdRestore.Modifier2))
+			optionsChanges = true;
+		if (Checkbox("Modifier 3", &pdRestore.Modifier3))
+			optionsChanges = true;
 	}
 
     // Restore Effect
 	if (CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
+		if (SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore"))
+			optionsChanges = true;
 	}
 
     // Regenerate Effect
 	if (CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
+		if (SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate"))
+			optionsChanges = true;
 	}
 
     // Foritfy Effect
 	if (CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
+		if (SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify"))
+			optionsChanges = true;
 	}
+
+	// Save the settings
+	if (optionsChanges) {
+		Settings::GetSingleton()->SaveINI();
+	}	
 }
 
 void __stdcall SPUI::RenderAutoMagicka() {
@@ -72,27 +107,40 @@ void __stdcall SPUI::RenderAutoMagicka() {
 	PotionData& pdRegen = Settings::GetSingleton()->Magicka_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Magicka_Fortify;
 
+	bool optionsChanges = false;
 	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 4);
-		Checkbox("Modifier 1", &pdRestore.Modifier1);
-		Checkbox("Modifier 2", &pdRestore.Modifier2);
-		Checkbox("Modifier 3", &pdRestore.Modifier3);
+		if (DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 4))
+			optionsChanges = true;
+		if (Checkbox("Modifier 1", &pdRestore.Modifier1))
+			optionsChanges = true;
+		if (Checkbox("Modifier 2", &pdRestore.Modifier2))
+			optionsChanges = true;
+		if (Checkbox("Modifier 3", &pdRestore.Modifier3))
+			optionsChanges = true;
 	}
 
     // Restore Effect
 	if (CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
+		if (SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore"))
+			optionsChanges = true;
 	}
 
     // Regenerate Effect
 	if (CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
+		if (SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate"))
+			optionsChanges = true;
 	}
 
     // Foritfy Effect
 	if (CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
+		if (SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify"))
+			optionsChanges = true;
 	}
+
+	// Save the settings
+	if (optionsChanges) {
+		Settings::GetSingleton()->SaveINI();
+	}	
 }
 
 void __stdcall SPUI::RenderAutoStamina() {
@@ -100,30 +148,44 @@ void __stdcall SPUI::RenderAutoStamina() {
 	PotionData& pdRegen = Settings::GetSingleton()->Stamina_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Stamina_Fortify;
 
+	bool optionsChanges = false;
 	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 5);
-		Checkbox("Modifier 1", &pdRestore.Modifier1);
-		Checkbox("Modifier 2", &pdRestore.Modifier2);
-		Checkbox("Modifier 3", &pdRestore.Modifier3);
+		if (DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 5))
+			optionsChanges = true;
+		if (Checkbox("Modifier 1", &pdRestore.Modifier1))
+			optionsChanges = true;
+		if (Checkbox("Modifier 2", &pdRestore.Modifier2))
+			optionsChanges = true;
+		if (Checkbox("Modifier 3", &pdRestore.Modifier3))
+			optionsChanges = true;
 	}
 
     // Restore Effect
 	if (CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
+		if (SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore"))
+			optionsChanges = true;
 	}
 
     // Regenerate Effect
 	if (CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
+		if (SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate"))
+			optionsChanges = true;
 	}
 
     // Foritfy Effect
 	if (CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
+		if (SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify"))
+			optionsChanges = true;
 	}
+
+	// Save the settings
+	if (optionsChanges) {
+		Settings::GetSingleton()->SaveINI();
+	}	
 }
 
 void __stdcall SPUI::RenderEffectHotkeys() {
+	bool optionsChanges = false;
 	std::vector<PotionData>& effectHotkeys = Settings::GetSingleton()->HotkeyRecords; 
 	std::vector<std::string> effectList;
 	Columns(2);
@@ -161,8 +223,10 @@ void __stdcall SPUI::RenderEffectHotkeys() {
 			if (BeginCombo("Magic Effect", pData.EffectName.c_str())) {
 				for (int i = 0; i < effectList.size(); i++) {
 					bool is_selected = (index == i);
-					if (Selectable(effectList[i].c_str(), is_selected))
+					if (Selectable(effectList[i].c_str(), is_selected)) {
 						pData.EffectName = effectList[i];
+						optionsChanges = true;
+					}
 				}
 				EndCombo();
 			}
@@ -171,8 +235,10 @@ void __stdcall SPUI::RenderEffectHotkeys() {
 			if (BeginCombo("Use Type", hotkeyTypes[pData.BestValue].c_str())) {
 				for (int i = 0; i < hotkeyTypes.size(); i++) {
 					bool is_selected = (pData.BestValue == i);
-					if (Selectable(hotkeyTypes[i].c_str(), is_selected))
+					if (Selectable(hotkeyTypes[i].c_str(), is_selected)) {
 						pData.BestValue = i;
+						optionsChanges = true;
+					}
 				}
 				EndCombo();
 			}
@@ -181,29 +247,41 @@ void __stdcall SPUI::RenderEffectHotkeys() {
 		// Food/Combat Checkboxes
 		if (Checkbox("Poison", &pData.Poison)) {
 			pData.EffectName = "";
+			optionsChanges = true;
 		}
-		Checkbox("Use Food", &pData.UseFood);
+		if (Checkbox("Use Food", &pData.UseFood))
+			optionsChanges = true;
 
 		// Hotkey Selection
 		if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
-			DrawHotkeyUI("System Hotkey", pData.Hotkey, 6);
-			Checkbox("Modifier 1", &pData.Modifier1);
-			Checkbox("Modifier 2", &pData.Modifier2);
-			Checkbox("Modifier 3", &pData.Modifier3);
+			if (DrawHotkeyUI("System Hotkey", pData.Hotkey, 6))
+				optionsChanges = true;
+			if (Checkbox("Modifier 1", &pData.Modifier1))
+				optionsChanges = true;
+			if (Checkbox("Modifier 2", &pData.Modifier2))
+				optionsChanges = true;
+			if (Checkbox("Modifier 3", &pData.Modifier3))
+				optionsChanges = true;
 		}
 	}
 
-	//ListBox
+	// Save the settings
+	if (optionsChanges &&  Settings::GetSingleton()->SPNG_HotkeyFile) {
+		Settings::GetSingleton()->SaveHotkeyINI();
+	}	
 }
 
 std::string SPUI::MakeLabel(const char* label, const char* category) {
     return std::format("{}##{}", label, category);
 }
 
-void SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category) {
+bool SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category) {
+	bool autoChanges = false;
+
 	std::vector<std::string> effectsPositive = Settings::GetSingleton()->Positive_Effects;
 
-	Checkbox(MakeLabel("Enabled", category).c_str(), &pData.Enabled);
+	if (Checkbox(MakeLabel("Enabled", category).c_str(), &pData.Enabled))
+		autoChanges = true;
 
 	// Effect Selection
 	auto it = std::find(effectsPositive.begin(), effectsPositive.end(), pData.EffectName);
@@ -213,18 +291,23 @@ void SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, 
 			bool is_selected = (index == i);
 			if (Selectable(effectsPositive[i].c_str(), is_selected))
 				pData.EffectName = effectsPositive[i];
+				autoChanges = true;
 		}
 		EndCombo();
 	}
 
 	// Food/Combat Checkboxes
-	Checkbox(MakeLabel("Use Food", category).c_str(), &pData.UseFood);
-	Checkbox(MakeLabel("Only in Combat", category).c_str(), &pData.CombatOnly);
+	if (Checkbox(MakeLabel("Use Food", category).c_str(), &pData.UseFood))
+		autoChanges = true;
+	if (Checkbox(MakeLabel("Only in Combat", category).c_str(), &pData.CombatOnly))
+		autoChanges = true;
 
 	// Attribute Threshold
     int fortifyThreshold = static_cast<int>(pData.Threshold* 100);
-	if (SliderInt(MakeLabel("Threshold", category).c_str(), &fortifyThreshold, 0, 100, "%d%%"))
+	if (SliderInt(MakeLabel("Threshold", category).c_str(), &fortifyThreshold, 0, 100, "%d%%")) {
 		pData.Threshold = fortifyThreshold / 100.0f;
+		autoChanges = true;
+	}
 
 	// Use Type
 	if (BeginCombo(MakeLabel("Use Type", category).c_str(), eTypes[pData.BestValue].c_str())) {
@@ -232,9 +315,13 @@ void SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, 
 			bool is_selected = (pData.BestValue == i);
 			if (Selectable(eTypes[i].c_str(), is_selected))
 				pData.BestValue = i;
+				autoChanges = true;
 		}
 		EndCombo();
 	}
+
+	// Save the settings
+	return autoChanges;
 }
 
 int SPUI::modifierKeySwap(int idCode) {
@@ -249,9 +336,11 @@ int SPUI::modifierKeySwap(int idCode) {
 	}
 }
 
-void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
+bool SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
     Text(header);
     SameLine();
+
+	bool keyChanges = false;
 
     // Show the button with current hotkey name
 	if (Button(waitKeys[waitIndex] ? "Press a key..." : GetKeyName((ImGuiKey)IDCodeToImGuiKey(hotkey)))) {
@@ -262,7 +351,7 @@ void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
         hotkey = -1;
     }
 
-    // If waiting, check all keys
+    // Wait for they key, and grab the input when pressed
     if (waitKeys[waitIndex]) {
 
 		// Look for key input
@@ -270,23 +359,32 @@ void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
             if (IsKeyPressed((ImGuiKey)key)) {
 				hotkey = ImGuiKeyToIDCode((ImGuiKey)key);
                 waitKeys[waitIndex] = false;
+				keyChanges = true;
                 break;
             }
         }
     }
+
 	// Show a Swap Button
 	if (std::find(modifierKeys.begin(), modifierKeys.end(), hotkey) != modifierKeys.end()) {
 		SameLine();
-		if (Button("Swap"))
+		if (Button("Swap")) {
 			hotkey = modifierKeySwap(hotkey);
+			keyChanges = true;
+		}
 	}
 
 	// Show a Clear Button
 	if (hotkey >= 0) {
 		SameLine();
-		if (Button("Reset"))
+		if (Button("Reset")) {
 			hotkey = -1;
+			keyChanges = true;
+		}
 	}
+
+	// Save the settings
+	return keyChanges;
 }
 
 ImGuiKey SPUI::IDCodeToImGuiKey(int idCode)

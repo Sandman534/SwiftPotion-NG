@@ -9,10 +9,6 @@ namespace Serialization
 		auto settings = Settings::GetSingleton();
 		auto utility = Utility::GetSingleton();
 
-		// Save our records to their INI files
-		settings->SaveINI();
-		settings->SaveHotkeyINI();
-
 		// If we are using persistance, we do not save the hotkeys
 		if (settings->SPNG_HotkeyFile)
 			return;
