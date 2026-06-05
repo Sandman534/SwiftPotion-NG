@@ -265,9 +265,9 @@ void Settings::SaveINI() {
 
 	// Additional Effects
 	detail::set_value(iniSettings, Cure_Disease.EffectName, "Other Auto Effects", "Disease_EffectName");
-	detail::set_value(iniSettings, Cure_Disease.EffectName, "Other Auto Effects", "Disease_Enabled");
+	detail::set_value(iniSettings, Cure_Disease.Enabled, "Other Auto Effects", "Disease_Enabled");
 	detail::set_value(iniSettings, Cure_Poison.EffectName, "Other Auto Effects", "Poison_EffectName");
-	detail::set_value(iniSettings, Cure_Poison.EffectName, "Other Auto Effects", "Poison_Enabled");
+	detail::set_value(iniSettings, Cure_Poison.Enabled, "Other Auto Effects", "Poison_Enabled");
 
 	iniSettings.SaveFile(settings_path);
 }

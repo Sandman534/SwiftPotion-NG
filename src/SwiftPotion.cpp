@@ -52,6 +52,7 @@ void SwiftPotion::SwiftPotionLoopUpdate() {
 
 void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
     auto utility = Utility::GetSingleton();
+    std::unordered_set<RE::FormID> activeForms;
 
     // Run check for potion use
     if (SystemData.Enabled && !SystemData.Stopper) {
@@ -65,27 +66,30 @@ void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
                 // Is the player in combat, or does combat no matter
 				if ((SystemData.CombatOnly && utility->GetPlayer()->IsInCombat()) || !SystemData.CombatOnly) {
 
-                    // Does the player have the required effect in their inventory
-					if (!AutoSystemEffectCheck(SystemData.EffectName)) {
-						UsePotion(utility->GetPlayer(), SystemData, false);
-					}
+                    // Get the active forms associated to the effect and send them along for additional checks
+                    auto activeForms = AutoSystemEffectCheck(SystemData.EffectName);
+					UsePotion(utility->GetPlayer(), SystemData, false, activeForms);
 				}
 			}
 		}
     }
 }
 
-bool SwiftPotion::AutoSystemEffectCheck(std::string sEffect) {
+std::unordered_set<RE::FormID> SwiftPotion::AutoSystemEffectCheck(std::string sEffect) {
     auto utility = Utility::GetSingleton();
     RE::Actor* aPlayer = Utility::GetPlayer();
+    std::unordered_set<RE::FormID> activeForms;
 
     // Check to see if the player has the effect listed
     for (auto& eEffect : *aPlayer->AsMagicTarget()->GetActiveEffectList()) {
-        if (strcmpi(eEffect->GetBaseObject()->GetFullName(),sEffect.c_str()) == 0 && eEffect->GetBaseObject()->HasKeyword(utility->positiveKeyword))
-            return true;
+		//eEffect->GetBaseObject()->GetFormID();
+        auto* baseEffect = eEffect->GetBaseObject();
+
+        if (baseEffect && strcmpi(baseEffect->GetFullName(),sEffect.c_str()) == 0 && baseEffect->HasKeyword(utility->positiveKeyword))
+             activeForms.insert(baseEffect->GetFormID());
     }
 
-    return false;
+    return activeForms;
 }
 
 void SwiftPotion::ExtraEffectCheck(PotionData &optionalData) {
@@ -99,12 +103,12 @@ void SwiftPotion::ExtraEffectCheck(PotionData &optionalData) {
     for (auto& eEffect : *aPlayer->AsMagicTarget()->GetActiveEffectList()) {
 		if (optionalData.Attribute == 0) {
 			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kDisease) {
-				UsePotion(utility->GetPlayer(), optionalData, false);
+				UsePotion(utility->GetPlayer(), optionalData, false, {});
 				break;
 			}
 		} else if (optionalData.Attribute == 1) {
 			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kPoison) {
-				UsePotion(utility->GetPlayer(), optionalData, false);
+				UsePotion(utility->GetPlayer(), optionalData, false, {});
 				break;
 			}
 		}
@@ -124,30 +128,30 @@ void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _mo
     else {
         for (PotionData hotkeyData : settings->HotkeyRecords) {
             if (hotkeyData.Hotkey == _code && hotkeyData.Modifier1 == _modifier1 && hotkeyData.Modifier2 == _modifier2 && hotkeyData.Modifier3 == _modifier3) {
-                UsePotion(utility->GetPlayer(), hotkeyData, true);
+				UsePotion(utility->GetPlayer(), hotkeyData, true, {});
             }
         }
     }
 }
 
-void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey) {
+void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey, const std::unordered_set<RE::FormID> &activeForms) {
 	// Setup constants
     auto utility = Utility::GetSingleton();
     auto settings = Settings::GetSingleton();   
 
     // Get the correct effect list based on type
-	RE::AlchemyItem* pPotion = GetPotion(aPlayer, SystemData);
+	foundPotionData pPotion = GetPotion(aPlayer, SystemData, activeForms);
 
 	// Use the potion, or stop the Auto system from running until another enteres the user inventory
-	if (pPotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, pPotion, nullptr, 1, nullptr, true);
-    else if (!pPotion && !bHotkey)
+	if (pPotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, pPotion.potion, nullptr, 1, nullptr, true);
+    else if (!pPotion.potion && !pPotion.foundPotion && !bHotkey)
         SystemData.Stopper = true;
 
     // Display notification if turned on
-    if (!pPotion && settings->SPNG_Notifications && !SystemData.Poison)
+    if (!pPotion.potion && !pPotion.foundPotion && settings->SPNG_Notifications && !SystemData.Poison)
     	utility->ShowNotification("You have no " + SystemData.EffectName + " potions");
-    else if (!pPotion && settings->SPNG_Notifications && SystemData.Poison)
+    else if (!pPotion.potion && !pPotion.foundPotion && settings->SPNG_Notifications && SystemData.Poison)
     	utility->ShowNotification("You have no " + SystemData.EffectName + " poisons");
 }
 
@@ -157,37 +161,38 @@ void SwiftPotion::UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreDat
     auto settings = Settings::GetSingleton();
 
     // Get the correct effect list based on type
-	RE::AlchemyItem* restorePotion = GetPotion(aPlayer, RestoreData);
-    RE::AlchemyItem* regenPotion = GetPotion(aPlayer, RegenData);
-    RE::AlchemyItem* fortifyPotion = GetPotion(aPlayer, FortifyData);
+	foundPotionData restorePotion = GetPotion(aPlayer, RestoreData, {});
+    foundPotionData regenPotion = GetPotion(aPlayer, RegenData, {});
+    foundPotionData fortifyPotion = GetPotion(aPlayer, FortifyData, {});
 
     // Display notification if turned on
-    if (!restorePotion && !regenPotion && !fortifyPotion && settings->SPNG_Notifications) {
+    if (!restorePotion.potion && !regenPotion.potion && !fortifyPotion.potion && settings->SPNG_Notifications) {
     	utility->ShowNotification("You have no " + EffectName + " effect potions");
         return;
     }
 
     // Auto System Hotkey 
-    if (FortifyData.Enabled && utility->GetPlayerAttribute(FortifyData.Attribute) <= FortifyData.Threshold && fortifyPotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, fortifyPotion, nullptr, 1, nullptr, true);
-    else if (RestoreData.Enabled && utility->GetPlayerAttribute(RestoreData.Attribute) <= RestoreData.Threshold && restorePotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, restorePotion, nullptr, 1, nullptr, true);
-    else if (RegenData.Enabled && utility->GetPlayerAttribute(RegenData.Attribute) <= RegenData.Threshold && regenPotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, regenPotion, nullptr, 1, nullptr, true);
-    else if (RestoreData.Enabled && restorePotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, restorePotion, nullptr, 1, nullptr, true);
-    else if (RegenData.Enabled && regenPotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, regenPotion, nullptr, 1, nullptr, true);
-    else if (FortifyData.Enabled && fortifyPotion)
-        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, fortifyPotion, nullptr, 1, nullptr, true);
+    if (FortifyData.Enabled && utility->GetPlayerAttribute(FortifyData.Attribute) <= FortifyData.Threshold && fortifyPotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, fortifyPotion.potion, nullptr, 1, nullptr, true);
+    else if (RestoreData.Enabled && utility->GetPlayerAttribute(RestoreData.Attribute) <= RestoreData.Threshold && restorePotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, restorePotion.potion, nullptr, 1, nullptr, true);
+    else if (RegenData.Enabled && utility->GetPlayerAttribute(RegenData.Attribute) <= RegenData.Threshold && regenPotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, regenPotion.potion, nullptr, 1, nullptr, true);
+    else if (RestoreData.Enabled && restorePotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, restorePotion.potion, nullptr, 1, nullptr, true);
+    else if (RegenData.Enabled && regenPotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, regenPotion.potion, nullptr, 1, nullptr, true);
+    else if (FortifyData.Enabled && fortifyPotion.potion)
+        RE::ActorEquipManager::GetSingleton()->EquipObject(aPlayer, fortifyPotion.potion, nullptr, 1, nullptr, true);
 
 }
 
-RE::AlchemyItem* SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionData &SystemData) {
+SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionData &SystemData, const std::unordered_set<RE::FormID> &activeForms) {
     auto utility = Utility::GetSingleton();
 
     // Set up local variables
     RE::AlchemyItem* pFinalPotion = nullptr;
+	foundPotionData foundPotion;
 
     // Magnitude needs to be set based on High/Low Option
     float iMagnitude = NULL;
@@ -209,8 +214,16 @@ RE::AlchemyItem* SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionData &SystemDa
 
             // Loop through all of the magic effects on the potion
             for (auto& eEffect : pPotion->effects) {
+                RE::FormID effectFormID = eEffect->baseEffect->GetFormID();
+
+                // The forms name matches
                 if (stricmp(eEffect->baseEffect->GetFullName(),SystemData.EffectName.c_str()) == 0) {
 
+                    // We have found both the effect and the assoicated form
+                    if (activeForms.contains(effectFormID)) {
+						foundPotion.foundPotion = true;
+						break;
+					}
                     // Optimal Value if selected
                     if (SystemData.BestValue == 2) {
                         // If the potion has no duration, set it to 1
@@ -223,18 +236,18 @@ RE::AlchemyItem* SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionData &SystemDa
                         float healthGap = abs(utility->GetPlayerDifference(SystemData.Attribute) - (eEffect->effectItem.magnitude * potionDuration));
                         if (!iMagnitude || healthGap < iMagnitude) {
                             iMagnitude = healthGap;
-                            pFinalPotion = pPotion;
+                            foundPotion.potion = pPotion;
                         }
                     
                     // Higher vs Lower Poition
                     } else if (!iMagnitude || (SystemData.BestValue == 0 && eEffect->effectItem.magnitude > iMagnitude) || (SystemData.BestValue == 1 && eEffect->effectItem.magnitude < iMagnitude)) {
                         iMagnitude = eEffect->effectItem.magnitude;
-                        pFinalPotion = pPotion;
+                        foundPotion.potion = pPotion;
                     }
                 }
             }
         }
     }
 
-    return pFinalPotion;
+    return foundPotion;
 }

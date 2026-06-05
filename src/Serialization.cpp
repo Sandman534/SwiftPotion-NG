@@ -95,7 +95,7 @@ namespace Serialization
 
 				// Deserialize the strink
 				settings->HotkeyRecords[idx].Deserialize(token);
-				logger::debug(FMT_STRING("Loaded Effect Hotkey {}"), idx);
+				//logger::debug(FMT_STRING("Loaded Effect Hotkey {}"), idx);
 
 				// Erase current element and move on to the next
 				elem.erase(0, pos + delimiter.length());

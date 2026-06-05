@@ -21,18 +21,18 @@ void __stdcall SPUI::RenderSettings()
 	PotionData& pdCureDisease = Settings::GetSingleton()->Cure_Disease;
 	PotionData& pdCurePoison = Settings::GetSingleton()->Cure_Poison;
 
-	if (ImGui::CollapsingHeader("General Options", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::Checkbox("Enable Auto System", &spSettings->SPNG_Enabled);
-		ImGui::Checkbox("Hotkey Notifications", &spSettings->SPNG_Notifications);
-		ImGui::Checkbox("Persistant Effect Hotkeys", &spSettings->SPNG_HotkeyFile);
+	if (CollapsingHeader("General Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+		Checkbox("Enable Auto System", &spSettings->SPNG_Enabled);
+		Checkbox("Hotkey Notifications", &spSettings->SPNG_Notifications);
+		Checkbox("Persistant Effect Hotkeys", &spSettings->SPNG_HotkeyFile);
 	}
 
-	if (ImGui::CollapsingHeader("Additional Auto Options", ImGuiTreeNodeFlags_DefaultOpen)) {
-		ImGui::Checkbox("Cure Disease", &pdCureDisease.Enabled);
-		ImGui::Checkbox("Cure Poison", &pdCurePoison.Enabled);
+	if (CollapsingHeader("Additional Auto Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+		Checkbox("Cure Disease", &pdCureDisease.Enabled);
+		Checkbox("Cure Poison", &pdCurePoison.Enabled);
 	}
 
-	if (ImGui::CollapsingHeader("Modifier Keys", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (CollapsingHeader("Modifier Keys", ImGuiTreeNodeFlags_DefaultOpen)) {
 		DrawHotkeyUI("Modifier Key 1", spSettings->SPNG_Modifier1, 0);
 		DrawHotkeyUI("Modifier Key 2", spSettings->SPNG_Modifier2, 1);
 		DrawHotkeyUI("Modifier Key 3", spSettings->SPNG_Modifier3, 2);
@@ -44,26 +44,26 @@ void __stdcall SPUI::RenderAutoHealth() {
 	PotionData& pdRegen = Settings::GetSingleton()->Health_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Health_Fortify;
 
-	if (ImGui::CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 3);
-		ImGui::Checkbox("Modifier 1", &pdRestore.Modifier1);
-		ImGui::Checkbox("Modifier 2", &pdRestore.Modifier2);
-		ImGui::Checkbox("Modifier 3", &pdRestore.Modifier3);
+		Checkbox("Modifier 1", &pdRestore.Modifier1);
+		Checkbox("Modifier 2", &pdRestore.Modifier2);
+		Checkbox("Modifier 3", &pdRestore.Modifier3);
 	}
 
     // Restore Effect
-	if (ImGui::CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes);
+	if (CollapsingHeader("Restore Effects")) {
+		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
 	}
 
     // Regenerate Effect
-	if (ImGui::CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes);
+	if (CollapsingHeader("Regenerate Effects")) {
+		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
 	}
 
     // Foritfy Effect
-	if (ImGui::CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes);
+	if (CollapsingHeader("Fortify Effects")) {
+		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
 	}
 }
 
@@ -72,26 +72,26 @@ void __stdcall SPUI::RenderAutoMagicka() {
 	PotionData& pdRegen = Settings::GetSingleton()->Magicka_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Magicka_Fortify;
 
-	if (ImGui::CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 4);
-		ImGui::Checkbox("Modifier 1", &pdRestore.Modifier1);
-		ImGui::Checkbox("Modifier 2", &pdRestore.Modifier2);
-		ImGui::Checkbox("Modifier 3", &pdRestore.Modifier3);
+		Checkbox("Modifier 1", &pdRestore.Modifier1);
+		Checkbox("Modifier 2", &pdRestore.Modifier2);
+		Checkbox("Modifier 3", &pdRestore.Modifier3);
 	}
 
     // Restore Effect
-	if (ImGui::CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes);
+	if (CollapsingHeader("Restore Effects")) {
+		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
 	}
 
     // Regenerate Effect
-	if (ImGui::CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes);
+	if (CollapsingHeader("Regenerate Effects")) {
+		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
 	}
 
     // Foritfy Effect
-	if (ImGui::CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes);
+	if (CollapsingHeader("Fortify Effects")) {
+		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
 	}
 }
 
@@ -100,48 +100,48 @@ void __stdcall SPUI::RenderAutoStamina() {
 	PotionData& pdRegen = Settings::GetSingleton()->Stamina_Regen;
 	PotionData& pdFortify = Settings::GetSingleton()->Stamina_Fortify;
 
-	if (ImGui::CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 		DrawHotkeyUI("System Hotkey", pdRestore.Hotkey, 5);
-		ImGui::Checkbox("Modifier 1", &pdRestore.Modifier1);
-		ImGui::Checkbox("Modifier 2", &pdRestore.Modifier2);
-		ImGui::Checkbox("Modifier 3", &pdRestore.Modifier3);
+		Checkbox("Modifier 1", &pdRestore.Modifier1);
+		Checkbox("Modifier 2", &pdRestore.Modifier2);
+		Checkbox("Modifier 3", &pdRestore.Modifier3);
 	}
 
     // Restore Effect
-	if (ImGui::CollapsingHeader("Restore Effects")) {
-		SPUI::AutoSystemEntry(pdRestore, effectTypes);
+	if (CollapsingHeader("Restore Effects")) {
+		SPUI::AutoSystemEntry(pdRestore, effectTypes, "Restore");
 	}
 
     // Regenerate Effect
-	if (ImGui::CollapsingHeader("Regenerate Effects")) {
-		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes);
+	if (CollapsingHeader("Regenerate Effects")) {
+		SPUI::AutoSystemEntry(pdRegen, hotkeyTypes, "Regenerate");
 	}
 
     // Foritfy Effect
-	if (ImGui::CollapsingHeader("Fortify Effects")) {
-		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes);
+	if (CollapsingHeader("Fortify Effects")) {
+		SPUI::AutoSystemEntry(pdFortify, hotkeyTypes, "Fortify");
 	}
 }
 
 void __stdcall SPUI::RenderEffectHotkeys() {
 	std::vector<PotionData>& effectHotkeys = Settings::GetSingleton()->HotkeyRecords; 
 	std::vector<std::string> effectList;
-	ImGui::Columns(2);
+	Columns(2);
 
-	if (ImGui::BeginListBox("Hotkeys", ImVec2(-FLT_MIN, 20 * ImGui::GetTextLineHeightWithSpacing()))) {
+	if (BeginListBox("Hotkeys", ImVec2(-FLT_MIN, 20 * GetTextLineHeightWithSpacing()))) {
 		for (int i = 0; i < effectHotkeys.size(); i++)
 		{
 			const bool isSelected = (i == hotkeyIndex);
 			std::string name = "Hotkey " + std::format("{:02}", i + 1) + ": " + effectHotkeys[i].EffectName;
-			if (ImGui::Selectable(name.c_str(), isSelected))
+			if (Selectable(name.c_str(), isSelected))
 				hotkeyIndex = i;
 
 			if (isSelected)
-				ImGui::SetItemDefaultFocus(); // ensures selected item is focused
+				SetItemDefaultFocus(); // ensures selected item is focused
 		}
-		ImGui::EndListBox();
+		EndListBox();
 	}
-	ImGui::NextColumn();
+	NextColumn();
 
 	// The Hotkey Modifications
 	if (hotkeyIndex >= 0 && hotkeyIndex < effectHotkeys.size()) {
@@ -154,82 +154,86 @@ void __stdcall SPUI::RenderEffectHotkeys() {
 			effectList = Settings::GetSingleton()->Positive_Effects;
 
 		// Effect settings
-		if (ImGui::CollapsingHeader("Effect Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (CollapsingHeader("Effect Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			// Effect Selection
 			auto it = std::find(effectList.begin(), effectList.end(), pData.EffectName);
 			int index = std::distance(effectList.begin(), it);
-			if (ImGui::BeginCombo("Magic Effect", pData.EffectName.c_str())) {
+			if (BeginCombo("Magic Effect", pData.EffectName.c_str())) {
 				for (int i = 0; i < effectList.size(); i++) {
 					bool is_selected = (index == i);
-					if (ImGui::Selectable(effectList[i].c_str(), is_selected))
+					if (Selectable(effectList[i].c_str(), is_selected))
 						pData.EffectName = effectList[i];
 				}
-				ImGui::EndCombo();
+				EndCombo();
 			}
 
 			// Use Type
-			if (ImGui::BeginCombo("Use Type", hotkeyTypes[pData.BestValue].c_str())) {
+			if (BeginCombo("Use Type", hotkeyTypes[pData.BestValue].c_str())) {
 				for (int i = 0; i < hotkeyTypes.size(); i++) {
 					bool is_selected = (pData.BestValue == i);
-					if (ImGui::Selectable(hotkeyTypes[i].c_str(), is_selected))
+					if (Selectable(hotkeyTypes[i].c_str(), is_selected))
 						pData.BestValue = i;
 				}
-				ImGui::EndCombo();
+				EndCombo();
 			}
 		}
 
 		// Food/Combat Checkboxes
-		if (ImGui::Checkbox("Poison", &pData.Poison)) {
+		if (Checkbox("Poison", &pData.Poison)) {
 			pData.EffectName = "";
 		}
-		ImGui::Checkbox("Use Food", &pData.UseFood);
+		Checkbox("Use Food", &pData.UseFood);
 
 		// Hotkey Selection
-		if (ImGui::CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+		if (CollapsingHeader("Hotkey Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			DrawHotkeyUI("System Hotkey", pData.Hotkey, 6);
-			ImGui::Checkbox("Modifier 1", &pData.Modifier1);
-			ImGui::Checkbox("Modifier 2", &pData.Modifier2);
-			ImGui::Checkbox("Modifier 3", &pData.Modifier3);
+			Checkbox("Modifier 1", &pData.Modifier1);
+			Checkbox("Modifier 2", &pData.Modifier2);
+			Checkbox("Modifier 3", &pData.Modifier3);
 		}
 	}
 
-	//ImGui::ListBox
+	//ListBox
 }
 
-void SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes) {
+std::string SPUI::MakeLabel(const char* label, const char* category) {
+    return std::format("{}##{}", label, category);
+}
+
+void SPUI::AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category) {
 	std::vector<std::string> effectsPositive = Settings::GetSingleton()->Positive_Effects;
 
-	ImGui::Checkbox("Enabled", &pData.Enabled);
+	Checkbox(MakeLabel("Enabled", category).c_str(), &pData.Enabled);
 
 	// Effect Selection
 	auto it = std::find(effectsPositive.begin(), effectsPositive.end(), pData.EffectName);
 	int index = std::distance(effectsPositive.begin(), it);
-	if (ImGui::BeginCombo("Magic Effect", pData.EffectName.c_str())) {
+	if (BeginCombo(MakeLabel("Magic Effect", category).c_str(), pData.EffectName.c_str())) {
 		for (int i = 0; i < effectsPositive.size(); i++) {
 			bool is_selected = (index == i);
-			if (ImGui::Selectable(effectsPositive[i].c_str(), is_selected))
+			if (Selectable(effectsPositive[i].c_str(), is_selected))
 				pData.EffectName = effectsPositive[i];
 		}
-		ImGui::EndCombo();
+		EndCombo();
 	}
 
 	// Food/Combat Checkboxes
-	ImGui::Checkbox("Use Food", &pData.UseFood);
-	ImGui::Checkbox("Only in Combat", &pData.CombatOnly);
+	Checkbox(MakeLabel("Use Food", category).c_str(), &pData.UseFood);
+	Checkbox(MakeLabel("Only in Combat", category).c_str(), &pData.CombatOnly);
 
 	// Attribute Threshold
     int fortifyThreshold = static_cast<int>(pData.Threshold* 100);
-	if (ImGui::SliderInt("Threshold", &fortifyThreshold, 0, 100, "%d%%"))
+	if (SliderInt(MakeLabel("Threshold", category).c_str(), &fortifyThreshold, 0, 100, "%d%%"))
 		pData.Threshold = fortifyThreshold / 100.0f;
 
 	// Use Type
-	if (ImGui::BeginCombo("Use Type", eTypes[pData.BestValue].c_str())) {
+	if (BeginCombo(MakeLabel("Use Type", category).c_str(), eTypes[pData.BestValue].c_str())) {
 		for (int i = 0; i < eTypes.size(); i++) {
 			bool is_selected = (pData.BestValue == i);
-			if (ImGui::Selectable(eTypes[i].c_str(), is_selected))
+			if (Selectable(eTypes[i].c_str(), is_selected))
 				pData.BestValue = i;
 		}
-		ImGui::EndCombo();
+		EndCombo();
 	}
 }
 
@@ -246,11 +250,11 @@ int SPUI::modifierKeySwap(int idCode) {
 }
 
 void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
-    ImGui::Text(header);
-    ImGui::SameLine();
+    Text(header);
+    SameLine();
 
     // Show the button with current hotkey name
-	if (ImGui::Button(waitKeys[waitIndex] ? "Press a key..." : ImGui::GetKeyName((ImGuiKey)IDCodeToImGuiKey(hotkey)))) {
+	if (Button(waitKeys[waitIndex] ? "Press a key..." : GetKeyName((ImGuiKey)IDCodeToImGuiKey(hotkey)))) {
 
 		// Clear out all of the waiting keys and enable the working one
 		std::fill(waitKeys.begin(), waitKeys.end(), false);
@@ -263,7 +267,7 @@ void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
 
 		// Look for key input
         for (int key = ImGuiKey_NamedKey_BEGIN; key < ImGuiKey_NamedKey_END; key++) {
-            if (ImGui::IsKeyPressed((ImGuiKey)key)) {
+            if (IsKeyPressed((ImGuiKey)key)) {
 				hotkey = ImGuiKeyToIDCode((ImGuiKey)key);
                 waitKeys[waitIndex] = false;
                 break;
@@ -272,15 +276,15 @@ void SPUI::DrawHotkeyUI(const char* header, int& hotkey, int waitIndex) {
     }
 	// Show a Swap Button
 	if (std::find(modifierKeys.begin(), modifierKeys.end(), hotkey) != modifierKeys.end()) {
-		ImGui::SameLine();
-		if (ImGui::Button("Swap"))
+		SameLine();
+		if (Button("Swap"))
 			hotkey = modifierKeySwap(hotkey);
 	}
 
 	// Show a Clear Button
 	if (hotkey >= 0) {
-		ImGui::SameLine();
-		if (ImGui::Button("Reset"))
+		SameLine();
+		if (Button("Reset"))
 			hotkey = -1;
 	}
 }

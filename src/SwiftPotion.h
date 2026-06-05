@@ -14,11 +14,17 @@ class SwiftPotion {
         inline static REL::Relocation<decltype(OnUpdate)> _OnUpdate;
     
     private:
+        struct foundPotionData
+        {
+            RE::AlchemyItem* potion = nullptr;
+            bool foundPotion = false;
+        };
+
         static void SwiftPotionLoopUpdate();
         static void AutoSystemCheck(PotionData &SystemData);
-        static bool AutoSystemEffectCheck(std::string sEffect);
+        static std::unordered_set<RE::FormID> AutoSystemEffectCheck(std::string sEffect);
         static void ExtraEffectCheck(PotionData &optionalData);
-        static void UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey);
+        static void UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey, const std::unordered_set<RE::FormID> &activeForms);
         static void UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreData, PotionData &RegenData, PotionData &FortifyData, std::string EffectName);
-        static RE::AlchemyItem* GetPotion(RE::Actor* aPlayer, PotionData &SystemData);
+        static foundPotionData GetPotion(RE::Actor* aPlayer, PotionData &SystemData, const std::unordered_set<RE::FormID> &activeForms);
 };

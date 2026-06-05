@@ -1,7 +1,8 @@
 #pragma once
-
-#include "SKSEMenuFramework.h"
 #include "Settings.h"
+#include "include\SKSEMenuFramework.h"
+
+using namespace ImGuiMCP;
 
 namespace SPUI {
     void Register();
@@ -30,10 +31,11 @@ namespace SPUI {
     void __stdcall RenderEffectHotkeys();
 
     // Additional Functions
-    void AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes);
+    void AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category);
     void DrawHotkeyUI(const char* header, int& hotkey, int waitIndex);
     int modifierKeySwap(int idCode);
     int ImGuiKeyToIDCode(ImGuiKey key);
 	ImGuiKey IDCodeToImGuiKey(int idCode);
+    std::string MakeLabel(const char* label, const char* category);
 
 };
