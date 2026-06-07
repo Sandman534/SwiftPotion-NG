@@ -34,33 +34,33 @@ void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
 
     for (auto& eEffect : pPotion->effects) {
 		// Health
-		if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Restore.EffectName.c_str()) == 0 && settings->Health_Restore.Stopper) {
+		if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Restore.EffectName.c_str()) == 0 && settings->Health_Restore.Stopper) {
 			settings->Health_Restore.Stopper = false;
-        } else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Regen.EffectName.c_str()) == 0 && settings->Health_Regen.Stopper) {
+        } else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Regen.EffectName.c_str()) == 0 && settings->Health_Regen.Stopper) {
 			settings->Health_Regen.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Fortify.EffectName.c_str()) == 0 && settings->Health_Fortify.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Health_Fortify.EffectName.c_str()) == 0 && settings->Health_Fortify.Stopper) {
 			settings->Health_Fortify.Stopper = false;
 
 		// Magicka
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Restore.EffectName.c_str()) == 0 && settings->Magicka_Restore.Stopper){
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Restore.EffectName.c_str()) == 0 && settings->Magicka_Restore.Stopper){
 			settings->Magicka_Restore.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Regen.EffectName.c_str()) == 0 && settings->Magicka_Regen.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Regen.EffectName.c_str()) == 0 && settings->Magicka_Regen.Stopper) {
 			settings->Magicka_Regen.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Fortify.EffectName.c_str()) == 0 && settings->Magicka_Fortify.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Magicka_Fortify.EffectName.c_str()) == 0 && settings->Magicka_Fortify.Stopper) {
 			settings->Magicka_Fortify.Stopper = false;
 
 		// Stamina
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Restore.EffectName.c_str()) == 0 && settings->Stamina_Restore.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Restore.EffectName.c_str()) == 0 && settings->Stamina_Restore.Stopper) {
 			settings->Stamina_Restore.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Regen.EffectName.c_str()) == 0 && settings->Stamina_Regen.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Regen.EffectName.c_str()) == 0 && settings->Stamina_Regen.Stopper) {
 			settings->Stamina_Regen.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Fortify.EffectName.c_str()) == 0 && settings->Stamina_Fortify.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Stamina_Fortify.EffectName.c_str()) == 0 && settings->Stamina_Fortify.Stopper) {
 			settings->Stamina_Fortify.Stopper = false;
 
         // Other Effects
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Disease.EffectName.c_str()) == 0 && settings->Cure_Disease.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Disease.EffectName.c_str()) == 0 && settings->Cure_Disease.Stopper) {
 			settings->Cure_Disease.Stopper = false;
-		} else if (stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Poison.EffectName.c_str()) == 0 && settings->Cure_Poison.Stopper) {
+		} else if (_stricmp(eEffect->baseEffect->GetFullName(),settings->Cure_Poison.EffectName.c_str()) == 0 && settings->Cure_Poison.Stopper) {
 			settings->Cure_Poison.Stopper = false;
         }
     };

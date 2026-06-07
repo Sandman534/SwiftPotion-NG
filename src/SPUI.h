@@ -26,11 +26,13 @@ namespace SPUI {
 	void __stdcall RenderAutoHealth();
 	void __stdcall RenderAutoStamina();
 	void __stdcall RenderAutoMagicka();
+    void __stdcall RenderAutoExtra();
     void __stdcall RenderEffectHotkeys();
 
     // Additional Functions
     bool AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category);
     bool DrawHotkeyUI(const char* header, int& hotkey, int waitIndex);
+    bool DrawEffectSelect(PotionData& pData, std::vector<std::string>& effectsPositive, const char* header);
     int modifierKeySwap(int idCode);
     int ImGuiKeyToIDCode(ImGuiKey key);
 	ImGuiKey IDCodeToImGuiKey(int idCode);

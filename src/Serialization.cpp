@@ -7,7 +7,6 @@ namespace Serialization
 	void SaveCallback(SKSE::SerializationInterface* a_skse)
 	{
 		auto settings = Settings::GetSingleton();
-		auto utility = Utility::GetSingleton();
 
 		// If we are using persistance, we do not save the hotkeys
 		if (settings->SPNG_HotkeyFile)

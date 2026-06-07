@@ -33,6 +33,33 @@ public:
     }
 };
 
+class MagicEffectApplyEventHandler : public RE::BSTEventSink<RE::TESMagicEffectApplyEvent> {
+public:
+    static MagicEffectApplyEventHandler* GetSingleton() {
+        static MagicEffectApplyEventHandler singleton;
+        return &singleton;
+    }
+
+    RE::BSEventNotifyControl ProcessEvent(const RE::TESMagicEffectApplyEvent* a_event, RE::BSTEventSource<RE::TESMagicEffectApplyEvent>* a_source) override {
+        if (!a_event)
+            return RE::BSEventNotifyControl::kContinue;
+            
+        auto* effect = RE::TESForm::LookupByID<RE::EffectSetting>(a_event->magicEffect);
+        auto* target = a_event->target.get();
+        auto* caster = a_event->caster.get();
+
+        if (target == RE::PlayerCharacter::GetSingleton() && effect)
+            SwiftPotion::ResistCheck(effect->data.resistVariable);
+
+        return RE::BSEventNotifyControl::kContinue;
+    }
+
+    static void Register() {
+        RE::ScriptEventSourceHolder* eventHolder = RE::ScriptEventSourceHolder::GetSingleton();
+        eventHolder->AddEventSink(MagicEffectApplyEventHandler::GetSingleton());
+    }
+};
+
 // Look for key inputs
 class InputEventHandler : public RE::BSTEventSink<RE::InputEvent*> {
 private:
@@ -160,9 +187,8 @@ public:
 namespace Events {
     void Register() {
         OnContainerChangedEventHandler::Register();
-    }
-
-    void RegisterInput() {
+        MagicEffectApplyEventHandler::Register();
         InputEventHandler::Register();
+        
     }
 }

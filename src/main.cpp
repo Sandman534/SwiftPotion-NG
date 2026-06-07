@@ -14,7 +14,6 @@ static void SKSEMessageHandler(SKSE::MessagingInterface::Message* message)
 		Settings::GetSingleton()->LoadSettings();
 		Hooks::Install();
 		Events::Register();
-		Events::RegisterInput();
 		break;
 	}
 }

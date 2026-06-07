@@ -8,6 +8,7 @@ class SwiftPotion {
     public:
         static bool InstallUpdateHook();
         static void ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3);
+        static void ResistCheck(RE::ActorValue resistVariable);
 
     protected:
         inline static std::int32_t OnUpdate();
@@ -21,9 +22,10 @@ class SwiftPotion {
         };
 
         static void SwiftPotionLoopUpdate();
+        static std::unordered_set<RE::FormID> GetActiveEffects(std::string sEffect);
         static void AutoSystemCheck(PotionData &SystemData);
-        static std::unordered_set<RE::FormID> AutoSystemEffectCheck(std::string sEffect);
-        static void ExtraEffectCheck(PotionData &optionalData);
+        static void CureSystemCheck(PotionData &cureData);
+        static void ResistSystemCheck(PotionData &resistData);
         static void UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHotkey, const std::unordered_set<RE::FormID> &activeForms);
         static void UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreData, PotionData &RegenData, PotionData &FortifyData, std::string EffectName);
         static foundPotionData GetPotion(RE::Actor* aPlayer, PotionData &SystemData, const std::unordered_set<RE::FormID> &activeForms);

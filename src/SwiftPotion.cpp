@@ -45,37 +45,12 @@ void SwiftPotion::SwiftPotionLoopUpdate() {
         AutoSystemCheck(settings->Stamina_Fortify);
 
         // Specific Monitoring
-		ExtraEffectCheck(settings->Cure_Disease);
-        ExtraEffectCheck(settings->Cure_Poison);
+		CureSystemCheck(settings->Cure_Disease);
+        CureSystemCheck(settings->Cure_Poison);
     }
 }
 
-void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
-    auto utility = Utility::GetSingleton();
-    std::unordered_set<RE::FormID> activeForms;
-
-    // Run check for potion use
-    if (SystemData.Enabled && !SystemData.Stopper) {
-
-        // Check for Over Encumbrance
-        if ((SystemData.Attribute == 2 && !utility->GetPlayer()->IsOverEncumbered()) || SystemData.Attribute != 2) {
-			
-            // Is our attribute below the required threshold
-            if (utility->GetPlayerAttribute(SystemData.Attribute) <= SystemData.Threshold) {
-
-                // Is the player in combat, or does combat no matter
-				if ((SystemData.CombatOnly && utility->GetPlayer()->IsInCombat()) || !SystemData.CombatOnly) {
-
-                    // Get the active forms associated to the effect and send them along for additional checks
-                    auto activeForms = AutoSystemEffectCheck(SystemData.EffectName);
-					UsePotion(utility->GetPlayer(), SystemData, false, activeForms);
-				}
-			}
-		}
-    }
-}
-
-std::unordered_set<RE::FormID> SwiftPotion::AutoSystemEffectCheck(std::string sEffect) {
+std::unordered_set<RE::FormID> SwiftPotion::GetActiveEffects(std::string sEffect) {
     auto utility = Utility::GetSingleton();
     RE::Actor* aPlayer = Utility::GetPlayer();
     std::unordered_set<RE::FormID> activeForms;
@@ -92,27 +67,69 @@ std::unordered_set<RE::FormID> SwiftPotion::AutoSystemEffectCheck(std::string sE
     return activeForms;
 }
 
-void SwiftPotion::ExtraEffectCheck(PotionData &optionalData) {
+void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
+    auto utility = Utility::GetSingleton();
+
+    // Conditional Checks
+    if (!SystemData.Enabled || SystemData.Stopper) return;
+    if (SystemData.Attribute == 2 && utility->GetPlayer()->IsOverEncumbered()) return;
+    if (utility->GetPlayerAttribute(SystemData.Attribute) > SystemData.Threshold) return;
+    if (SystemData.CombatOnly && !utility->GetPlayer()->IsInCombat()) return;
+
+    // Get the active forms associated to the effect and send them along for additional checks
+    auto activeForms = GetActiveEffects(SystemData.EffectName);
+	UsePotion(utility->GetPlayer(), SystemData, false, activeForms);
+}
+
+void SwiftPotion::CureSystemCheck(PotionData &cureData) {
     auto utility = Utility::GetSingleton();
     RE::Actor* aPlayer = Utility::GetPlayer();
 
     // Return if no data found
-    if (!optionalData.Enabled || optionalData.Stopper) return;
+    if (!cureData.Enabled || cureData.Stopper) return;
   
     // Check to see if the player has the effect listed
     for (auto& eEffect : *aPlayer->AsMagicTarget()->GetActiveEffectList()) {
-		if (optionalData.Attribute == 0) {
+		if (cureData.Attribute == 0) {
 			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kDisease) {
-				UsePotion(utility->GetPlayer(), optionalData, false, {});
+				UsePotion(utility->GetPlayer(), cureData, false, {});
 				break;
 			}
-		} else if (optionalData.Attribute == 1) {
+		} else if (cureData.Attribute == 1) {
 			if (eEffect->spell && eEffect->spell->GetSpellType() == RE::MagicSystem::SpellType::kPoison) {
-				UsePotion(utility->GetPlayer(), optionalData, false, {});
+				UsePotion(utility->GetPlayer(), cureData, false, {});
 				break;
 			}
 		}
     }
+}
+
+void SwiftPotion::ResistSystemCheck(PotionData &resistData) {
+    auto utility = Utility::GetSingleton();
+    RE::Actor* aPlayer = Utility::GetPlayer();
+
+    // Conditional Checks
+    if (!resistData.Enabled || resistData.Stopper) return;
+    if (utility->GetPlayerAttribute(resistData.Attribute) > resistData.Threshold) return;
+    if (resistData.CombatOnly && !utility->GetPlayer()->IsInCombat()) return;
+
+    // Get the active forms associated to the effect and send them along for additional checks
+    auto activeForms = GetActiveEffects(resistData.EffectName);
+    UsePotion(utility->GetPlayer(), resistData, false, activeForms);
+}
+
+void SwiftPotion::ResistCheck(RE::ActorValue resistVariable) {
+    auto utility = Utility::GetSingleton();
+    auto settings = Settings::GetSingleton();
+
+    if (resistVariable == RE::ActorValue::kResistFire)
+        ResistSystemCheck(settings->Resist_Fire);
+    else if (resistVariable == RE::ActorValue::kResistShock)
+        ResistSystemCheck(settings->Resist_Shock);
+    else if (resistVariable == RE::ActorValue::kResistFrost)
+        ResistSystemCheck(settings->Resist_Frost);
+    else if (resistVariable == RE::ActorValue::kResistMagic)
+        ResistSystemCheck(settings->Resist_Magic);
 }
 
 void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3) {

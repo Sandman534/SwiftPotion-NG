@@ -2,5 +2,4 @@
 
 namespace Events {
     void Register();
-    void RegisterInput();
 }

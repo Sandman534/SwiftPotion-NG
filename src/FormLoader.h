@@ -47,9 +47,15 @@ public:
         settings->StaminaRegenName = dataHandler->LookupForm(RE::FormID(0x3EB08), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
         settings->StaminaFortifyName = dataHandler->LookupForm(RE::FormID(0x3EAF9), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
 
-        // Additional Effect Names
+        // Cure Effect Names
         settings->CureDiseaseName = dataHandler->LookupForm(RE::FormID(0xAE722), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
         settings->CurePoisonName = dataHandler->LookupForm(RE::FormID(0x109ADD), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
+
+        // Resist Effect Names
+        settings->ResistFireName = dataHandler->LookupForm(RE::FormID(0x3EAEA), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
+        settings->ResistShockName = dataHandler->LookupForm(RE::FormID(0x3EAEC), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
+        settings->ResistFrostName = dataHandler->LookupForm(RE::FormID(0x3EAEB), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
+        settings->ResistMagicName = dataHandler->LookupForm(RE::FormID(0x39E51), pluginSkyrim)->As<RE::EffectSetting>()->GetFullName();
          
         // Effect Keywords
         utility->positiveKeyword = dataHandler->LookupForm(RE::FormID(0xF8A4E), pluginSkyrim)->As<RE::BGSKeyword>();

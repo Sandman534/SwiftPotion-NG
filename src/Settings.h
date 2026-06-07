@@ -56,6 +56,10 @@ public:
 	// Additional Effect Names
 	std::string CureDiseaseName;
 	std::string CurePoisonName;
+	std::string ResistFireName;
+	std::string ResistShockName;
+	std::string ResistFrostName;
+	std::string ResistMagicName;
 
 	// Potion Data
 	PotionData Health_Restore;
@@ -75,6 +79,10 @@ public:
 	// Additional Data
 	PotionData Cure_Disease;
 	PotionData Cure_Poison;
+	PotionData Resist_Fire;
+	PotionData Resist_Shock;
+	PotionData Resist_Frost;
+	PotionData Resist_Magic;
 
 	// Effect Name Lists
 	std::vector<std::string> Positive_Effects;
@@ -101,6 +109,8 @@ public:
 	void DefaultAutoData(PotionData &SystemData, std::string sType, std::string sEffectName);
 
 private:
+	void SetExtra(PotionData &SystemData, std::string effectName, int iAttribute);
+
 	struct detail {
 		// Get Values
 		static void get_value(CSimpleIniA& a_ini, bool& a_value, const char* a_section, const char* a_key);

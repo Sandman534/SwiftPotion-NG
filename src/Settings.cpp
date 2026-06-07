@@ -32,13 +32,15 @@ void Settings::LoadSettings() {
 	DefaultAutoData(Stamina_Regen,"SR",StaminaRegenName);
 	DefaultAutoData(Stamina_Fortify,"SF",StaminaFortifyName);
 
-	// Set additional effects
-	Cure_Disease.EffectName = CureDiseaseName;
-	Cure_Disease.Enabled = false;
-	Cure_Disease.Attribute = 0;
-	Cure_Poison.EffectName = CurePoisonName;
-	Cure_Poison.Enabled = false;
-	Cure_Poison.Attribute = 1;
+	// Cure Effects
+	SetExtra(Cure_Disease, CureDiseaseName, 0);
+	SetExtra(Cure_Poison, CurePoisonName, 1);
+
+	// Resist Effects
+	SetExtra(Resist_Fire, ResistFireName, 0);
+	SetExtra(Resist_Shock, ResistShockName, 0);
+	SetExtra(Resist_Frost, ResistFrostName, 0);
+	SetExtra(Resist_Magic, ResistMagicName, 0);
 
 	// Load INI Settings
 	LoadINI();
@@ -52,6 +54,15 @@ void Settings::LoadSettings() {
 
 	// Load Effects
 	SetupEffects();
+}
+
+void Settings::SetExtra(PotionData &SystemData, std::string effectName, int iAttribute) {
+	SystemData.EffectName = effectName;
+	SystemData.Enabled = true;
+	SystemData.Attribute = iAttribute;
+	SystemData.Threshold = 0.5;
+	SystemData.CombatOnly = true;
+	SystemData.BestValue = 0;
 }
 
 void Settings::LoadINI() {	
@@ -151,11 +162,33 @@ void Settings::LoadINI() {
 	detail::get_value(iniSettings, Stamina_Fortify.CombatOnly, "Stamina System", "SF_CombatOnly");
 	detail::get_value(iniSettings, Stamina_Fortify.Threshold, "Stamina System", "SF_Threshold");
 
-	// Additional Effects
-	detail::get_value(iniSettings, Cure_Disease.EffectName, "Other Auto Effects", "Disease_EffectName");
-	detail::get_value(iniSettings, Cure_Disease.Enabled, "Other Auto Effects", "Disease_Enabled");
-	detail::get_value(iniSettings, Cure_Poison.EffectName, "Other Auto Effects", "Poison_EffectName");
-	detail::get_value(iniSettings, Cure_Poison.Enabled, "Other Auto Effects", "Poison_Enabled");
+	// Cure Effects
+	detail::get_value(iniSettings, Cure_Disease.EffectName, "Cure Auto Effects", "Disease_EffectName");
+	detail::get_value(iniSettings, Cure_Disease.Enabled, "Cure Auto Effects", "Disease_Enabled");
+	detail::get_value(iniSettings, Cure_Poison.EffectName, "Cure Auto Effects", "Poison_EffectName");
+	detail::get_value(iniSettings, Cure_Poison.Enabled, "Cure Auto Effects", "Poison_Enabled");
+
+	// Resist Effects
+	detail::get_value(iniSettings, Resist_Fire.EffectName, "Resist Auto Effects", "ResistFire_EffectName");
+	detail::get_value(iniSettings, Resist_Shock.EffectName, "Resist Auto Effects", "ResistShock_EffectName");
+	detail::get_value(iniSettings, Resist_Frost.EffectName, "Resist Auto Effects", "ResistFrost_EffectName");
+	detail::get_value(iniSettings, Resist_Magic.EffectName, "Resist Auto Effects", "ResistMagic_EffectName");
+	detail::get_value(iniSettings, Resist_Fire.Enabled, "Resist Auto Effects", "Resist_Enabled");
+	detail::get_value(iniSettings, Resist_Fire.Threshold, "Resist Auto Effects", "Resist_Threshold");
+	detail::get_value(iniSettings, Resist_Fire.CombatOnly, "Resist Auto Effects", "Resist_CombatOnly");
+	detail::get_value(iniSettings, Resist_Fire.BestValue, "Resist Auto Effects", "Resist_BestValue");
+	detail::get_value(iniSettings, Resist_Shock.Enabled, "Resist Auto Effects", "Resist_Enabled");
+	detail::get_value(iniSettings, Resist_Shock.Threshold, "Resist Auto Effects", "Resist_Threshold");
+	detail::get_value(iniSettings, Resist_Shock.CombatOnly, "Resist Auto Effects", "Resist_CombatOnly");
+	detail::get_value(iniSettings, Resist_Shock.BestValue, "Resist Auto Effects", "Resist_BestValue");
+	detail::get_value(iniSettings, Resist_Frost.Enabled, "Resist Auto Effects", "Resist_Enabled");
+	detail::get_value(iniSettings, Resist_Frost.Threshold, "Resist Auto Effects", "Resist_Threshold");
+	detail::get_value(iniSettings, Resist_Frost.CombatOnly, "Resist Auto Effects", "Resist_CombatOnly");
+	detail::get_value(iniSettings, Resist_Frost.BestValue, "Resist Auto Effects", "Resist_BestValue");
+	detail::get_value(iniSettings, Resist_Magic.Enabled, "Resist Auto Effects", "Resist_Enabled");
+	detail::get_value(iniSettings, Resist_Magic.Threshold, "Resist Auto Effects", "Resist_Threshold");
+	detail::get_value(iniSettings, Resist_Magic.CombatOnly, "Resist Auto Effects", "Resist_CombatOnly");
+	detail::get_value(iniSettings, Resist_Magic.BestValue, "Resist Auto Effects", "Resist_BestValue");
 
 	iniSettings.SaveFile(settings_path);
 }
@@ -263,11 +296,21 @@ void Settings::SaveINI() {
 	detail::set_value(iniSettings, Stamina_Fortify.CombatOnly, "Stamina System", "SF_CombatOnly");
 	detail::set_value(iniSettings, Stamina_Fortify.Threshold, "Stamina System", "SF_Threshold");
 
-	// Additional Effects
-	detail::set_value(iniSettings, Cure_Disease.EffectName, "Other Auto Effects", "Disease_EffectName");
-	detail::set_value(iniSettings, Cure_Disease.Enabled, "Other Auto Effects", "Disease_Enabled");
-	detail::set_value(iniSettings, Cure_Poison.EffectName, "Other Auto Effects", "Poison_EffectName");
-	detail::set_value(iniSettings, Cure_Poison.Enabled, "Other Auto Effects", "Poison_Enabled");
+	// Cure Effects
+	detail::set_value(iniSettings, Cure_Disease.EffectName, "Cure Auto Effects", "Disease_EffectName");
+	detail::set_value(iniSettings, Cure_Disease.Enabled, "Cure Auto Effects", "Disease_Enabled");
+	detail::set_value(iniSettings, Cure_Poison.EffectName, "Cure Auto Effects", "Poison_EffectName");
+	detail::set_value(iniSettings, Cure_Poison.Enabled, "Cure Auto Effects", "Poison_Enabled");
+
+	// Resist Effects
+	detail::set_value(iniSettings, Resist_Fire.EffectName, "Resist Auto Effects", "ResistFire_EffectName");
+	detail::set_value(iniSettings, Resist_Shock.EffectName, "Resist Auto Effects", "ResistShock_EffectName");
+	detail::set_value(iniSettings, Resist_Frost.EffectName, "Resist Auto Effects", "ResistFrost_EffectName");
+	detail::set_value(iniSettings, Resist_Magic.EffectName, "Resist Auto Effects", "ResistMagic_EffectName");
+	detail::set_value(iniSettings, Resist_Fire.Enabled, "Resist Auto Effects", "Resist_Enabled");
+	detail::set_value(iniSettings, Resist_Fire.Threshold, "Resist Auto Effects", "Resist_Threshold");
+	detail::set_value(iniSettings, Resist_Fire.CombatOnly, "Resist Auto Effects", "Resist_CombatOnly");
+	detail::set_value(iniSettings, Resist_Fire.BestValue, "Resist Auto Effects", "Resist_BestValue");
 
 	iniSettings.SaveFile(settings_path);
 }
