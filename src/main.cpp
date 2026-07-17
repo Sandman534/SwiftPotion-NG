@@ -14,6 +14,8 @@ static void SKSEMessageHandler(SKSE::MessagingInterface::Message* message)
 		Settings::GetSingleton()->LoadSettings();
 		Hooks::Install();
 		Events::Register();
+		SPUI::InstallTranslation();
+		SPUI::Register();
 		break;
 	}
 }
@@ -47,7 +49,6 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_s
 
 	// Register the SKSE Menu
 	logger::info("{} has finished loading.", Plugin::NAME);
-	SPUI::Register();
 
     return true;
 }

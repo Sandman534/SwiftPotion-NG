@@ -13,6 +13,8 @@ simpleini/
 fmt/
 xbyak/
 view/
+sksemenuframework/
+json/
 
 # files
 *.zip
