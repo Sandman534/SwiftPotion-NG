@@ -444,7 +444,6 @@ bool Settings::IsBlacklisted(RE::FormID a_form) {
 
 void Settings::SetupEffects() {
 	// Get Alchemy Keywords
-	auto utility = Utility::GetSingleton();
 	const auto dataHandler = RE::TESDataHandler::GetSingleton();
     RE::BGSKeyword* positiveKeyword = dataHandler->LookupForm(RE::FormID(0x0F8A4E), "Skyrim.esm")->As<RE::BGSKeyword>();
     RE::BGSKeyword* negativeKeyword = dataHandler->LookupForm(RE::FormID(0x42509), "Skyrim.esm")->As<RE::BGSKeyword>();
@@ -539,13 +538,13 @@ void Settings::DefaultAutoData(PotionData &SystemData, std::string sType, std::s
 	// Set effect type specific defaults
 	if (sType == "H" || sType == "M" || sType == "S") {
 		SystemData.BestValue = 2;
-		SystemData.Threshold = 0.25;
+		SystemData.Threshold = 0.25f;
 	} else if (sType == "HR" || sType == "MR" || sType == "SR") {
 		SystemData.BestValue = 0;
-		SystemData.Threshold = 0.50;
+		SystemData.Threshold = 0.50f;
 	} else if (sType == "HF" || sType == "MF" || sType == "SF") {
 		SystemData.BestValue = 0;
-		SystemData.Threshold = 0.10;
+		SystemData.Threshold = 0.10f;
 	}
 
 }

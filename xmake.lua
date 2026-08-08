@@ -65,8 +65,7 @@ target('SwiftPotion-NG')
         '$(projectdir)/xbyak',
         '$(projectdir)/simpleini',
         '$(projectdir)/fmt',
-		'$(projectdir)/json/include',
-        '$(projectdir)/sksemenuframework/resources'
+		'$(projectdir)/json/include'
     )
 
     set_pcxxheader('src/pch.h')

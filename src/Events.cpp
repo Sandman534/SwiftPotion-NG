@@ -40,13 +40,12 @@ public:
         return &singleton;
     }
 
-    RE::BSEventNotifyControl ProcessEvent(const RE::TESMagicEffectApplyEvent* a_event, RE::BSTEventSource<RE::TESMagicEffectApplyEvent>* a_source) override {
+    RE::BSEventNotifyControl ProcessEvent(const RE::TESMagicEffectApplyEvent* a_event, [[maybe_unused]] RE::BSTEventSource<RE::TESMagicEffectApplyEvent>* a_source) override {
         if (!a_event)
             return RE::BSEventNotifyControl::kContinue;
             
         auto* effect = RE::TESForm::LookupByID<RE::EffectSetting>(a_event->magicEffect);
         auto* target = a_event->target.get();
-        auto* caster = a_event->caster.get();
 
         if (target == RE::PlayerCharacter::GetSingleton() && effect)
             SwiftPotion::ResistCheck(effect->data.resistVariable);
@@ -73,7 +72,7 @@ public:
         return &singleton;
     }
 
-    RE::BSEventNotifyControl ProcessEvent(RE::InputEvent* const* a_event,RE::BSTEventSource<RE::InputEvent*>* a_eventSource) {
+    RE::BSEventNotifyControl ProcessEvent(RE::InputEvent* const* a_event, [[maybe_unused]] RE::BSTEventSource<RE::InputEvent*>* a_eventSource) {
         if (a_event) {
             const auto ui = RE::UI::GetSingleton();
             const auto settings = Settings::GetSingleton();
@@ -84,8 +83,6 @@ public:
                 const auto playerControls = RE::PlayerControls::GetSingleton();
 
                 if (controlMap && playerCharacter && playerControls) {
-                    auto event = *a_event;
-
                     for (auto event = *a_event; event; event = event->next) {
                         if (event->eventType == RE::INPUT_EVENT_TYPE::kButton) {
                             const auto button = static_cast<RE::ButtonEvent*>(event);
@@ -94,6 +91,8 @@ public:
 
                             auto device = button->device.get();
                             auto scan_code = button->GetIDCode();
+                            if (scan_code < 0) return RE::BSEventNotifyControl::kContinue;
+                            auto code = static_cast<int>(scan_code);
 
                             if (device == RE::INPUT_DEVICE::kMouse)
                                 scan_code += 256;
@@ -154,15 +153,12 @@ public:
                                 }
                             }
 
-                            // Get settings
-                            auto settings = Settings::GetSingleton();
-
                             // Modifier Key
-                            if (scan_code == settings->SPNG_Modifier1)
+                            if (code == settings->SPNG_Modifier1)
                                 isModifier1 = button->IsPressed();
-                            else if (scan_code == settings->SPNG_Modifier2)
+                            else if (code == settings->SPNG_Modifier2)
                                 isModifier2 = button->IsPressed();
-                            else if (scan_code == settings->SPNG_Modifier3)
+                            else if (code == settings->SPNG_Modifier3)
                                 isModifier3 = button->IsPressed();
 
                             // Dont activate on button up

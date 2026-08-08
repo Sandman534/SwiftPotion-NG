@@ -30,21 +30,10 @@ namespace SPUI {
     void __stdcall RenderAutoExtra();
     void __stdcall RenderEffectHotkeys();
 
-    inline constexpr const char* translationsFolder = "Data\\SKSE\\Plugins\\SwiftPotionNG_Translation.json";
-    inline const char* defaultTranslation = "Missing Translation";
-    static inline std::map<std::string, const char*> translations;
-
-    // Translations
-    void InstallTranslation();
-    const char* Translate(std::string key);
-
     // Additional Functions
     bool AutoSystemEntry(PotionData& pData, std::vector<std::string>& eTypes, const char* category);
     bool DrawHotkeyUI(const char* header, int& hotkey, int waitIndex);
     bool DrawEffectSelect(PotionData& pData, std::vector<std::string>& effectsPositive, const char* header);
     int modifierKeySwap(int idCode);
-    int ImGuiKeyToIDCode(ImGuiKey key);
-	ImGuiKey IDCodeToImGuiKey(int idCode);
     std::string MakeLabel(const char* label, const char* category);
-
 };

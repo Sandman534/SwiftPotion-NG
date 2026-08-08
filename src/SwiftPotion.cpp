@@ -60,7 +60,7 @@ std::unordered_set<RE::FormID> SwiftPotion::GetActiveEffects(std::string sEffect
 		//eEffect->GetBaseObject()->GetFormID();
         auto* baseEffect = eEffect->GetBaseObject();
 
-        if (baseEffect && strcmpi(baseEffect->GetFullName(),sEffect.c_str()) == 0 && baseEffect->HasKeyword(utility->positiveKeyword))
+        if (baseEffect && _strcmpi(baseEffect->GetFullName(),sEffect.c_str()) == 0 && baseEffect->HasKeyword(utility->positiveKeyword))
              activeForms.insert(baseEffect->GetFormID());
     }
 
@@ -106,7 +106,6 @@ void SwiftPotion::CureSystemCheck(PotionData &cureData) {
 
 void SwiftPotion::ResistSystemCheck(PotionData &resistData) {
     auto utility = Utility::GetSingleton();
-    RE::Actor* aPlayer = utility->GetPlayer();
 
     // Conditional Checks
     if (!resistData.Enabled || resistData.Stopper) return;
@@ -119,7 +118,6 @@ void SwiftPotion::ResistSystemCheck(PotionData &resistData) {
 }
 
 void SwiftPotion::ResistCheck(RE::ActorValue resistVariable) {
-    auto utility = Utility::GetSingleton();
     auto settings = Settings::GetSingleton();
 
     if (resistVariable == RE::ActorValue::kResistFire)
@@ -136,15 +134,18 @@ void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _mo
     auto utility = Utility::GetSingleton();
     auto settings = Settings::GetSingleton();
 
-    if (settings->Health_Restore.Hotkey == _code && settings->Health_Restore.Modifier1 == _modifier1 && settings->Health_Restore.Modifier2 == _modifier2 && settings->Health_Restore.Modifier3 == _modifier3)
+    if (_code < 0) return;
+    auto code = static_cast<int>(_code);
+
+    if (settings->Health_Restore.Hotkey == code && settings->Health_Restore.Modifier1 == _modifier1 && settings->Health_Restore.Modifier2 == _modifier2 && settings->Health_Restore.Modifier3 == _modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Health_Restore, settings->Health_Regen, settings->Health_Fortify, "Health");
-    else if (settings->Magicka_Restore.Hotkey == _code && settings->Magicka_Restore.Modifier1 == _modifier1 && settings->Magicka_Restore.Modifier2 == _modifier2 && settings->Magicka_Restore.Modifier3 == _modifier3)
+    else if (settings->Magicka_Restore.Hotkey == code && settings->Magicka_Restore.Modifier1 == _modifier1 && settings->Magicka_Restore.Modifier2 == _modifier2 && settings->Magicka_Restore.Modifier3 == _modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Magicka_Restore, settings->Magicka_Regen, settings->Magicka_Fortify, "Magicka");
-    else if (settings->Stamina_Restore.Hotkey == _code && settings->Stamina_Restore.Modifier1 == _modifier1 && settings->Stamina_Restore.Modifier2 == _modifier2 && settings->Stamina_Restore.Modifier3 == _modifier3)
+    else if (settings->Stamina_Restore.Hotkey == code && settings->Stamina_Restore.Modifier1 == _modifier1 && settings->Stamina_Restore.Modifier2 == _modifier2 && settings->Stamina_Restore.Modifier3 == _modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Stamina_Restore, settings->Stamina_Regen, settings->Stamina_Fortify, "Stamina");
     else {
         for (PotionData hotkeyData : settings->HotkeyRecords) {
-            if (hotkeyData.Hotkey == _code && hotkeyData.Modifier1 == _modifier1 && hotkeyData.Modifier2 == _modifier2 && hotkeyData.Modifier3 == _modifier3) {
+            if (hotkeyData.Hotkey == code && hotkeyData.Modifier1 == _modifier1 && hotkeyData.Modifier2 == _modifier2 && hotkeyData.Modifier3 == _modifier3) {
 				UsePotion(utility->GetPlayer(), hotkeyData, true, {});
             }
         }
@@ -209,7 +210,6 @@ SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionDa
     auto setting = Settings::GetSingleton();
 
     // Set up local variables
-    RE::AlchemyItem* pFinalPotion = nullptr;
 	foundPotionData foundPotion;
 
     // Magnitude needs to be set based on High/Low Option
@@ -235,7 +235,7 @@ SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionDa
                 RE::FormID effectFormID = eEffect->baseEffect->GetFormID();
 
                 // The forms name matches
-                if (stricmp(eEffect->baseEffect->GetFullName(),SystemData.EffectName.c_str()) == 0) {
+                if (_stricmp(eEffect->baseEffect->GetFullName(),SystemData.EffectName.c_str()) == 0) {
 
                     // We have found both the effect and the assoicated form
                     if (activeForms.contains(effectFormID)) {
@@ -245,9 +245,9 @@ SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionDa
                     // Optimal Value if selected
                     if (SystemData.BestValue == 2) {
                         // If the potion has no duration, set it to 1
-                        float potionDuration = NULL;
+                        int potionDuration = NULL;
                         if (eEffect->effectItem.duration <= 0)
-                            potionDuration = 1.0;
+                            potionDuration = 1;
                         else
                             potionDuration = eEffect->effectItem.duration;
 

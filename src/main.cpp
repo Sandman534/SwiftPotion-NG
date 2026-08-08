@@ -3,18 +3,19 @@
 #include "Hooks.h"
 #include "Serialization.h"
 #include "SPUI.h"
+#include "Translation.h"
 #include <stddef.h>
 
 static void SKSEMessageHandler(SKSE::MessagingInterface::Message* message)
 {
 	switch (message->type) {
 	case SKSE::MessagingInterface::kDataLoaded:
+		Translation::Install();
 		FormLoader::GetSingleton()->CacheGameAddresses();
 		FormLoader::GetSingleton()->LoadAllForms();
 		Settings::GetSingleton()->LoadSettings();
 		Hooks::Install();
 		Events::Register();
-		SPUI::InstallTranslation();
 		SPUI::Register();
 		break;
 	}
