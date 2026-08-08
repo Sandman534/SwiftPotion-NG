@@ -89,67 +89,8 @@ public:
                             if (!button || (button->IsPressed() && !button->IsDown()))
                                 continue;
 
-                            auto device = button->device.get();
-                            auto scan_code = static_cast<int>(button->GetIDCode());
-
-                            if (device == RE::INPUT_DEVICE::kMouse)
-                                scan_code += 256;
-                            else if (device == RE::INPUT_DEVICE::kGamepad) {
-                                RE::BSWin32GamepadDevice::Key gamepadKey = static_cast<RE::BSWin32GamepadDevice::Key>(scan_code);
-                                switch (gamepadKey) {
-                                    case RE::BSWin32GamepadDevice::Key::kUp:
-                                        scan_code = 266;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kDown:
-                                        scan_code = 267;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kLeft:
-                                        scan_code = 268;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kRight:
-                                        scan_code = 269;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kStart:
-                                        scan_code = 270;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kBack:
-                                        scan_code = 271;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kLeftThumb:
-                                        scan_code = 272;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kRightThumb:
-                                        scan_code = 273;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kLeftShoulder:
-                                        scan_code = 274;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kRightShoulder:
-                                        scan_code = 275;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kA:
-                                        scan_code = 276;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kB:
-                                        scan_code = 277;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kX:
-                                        scan_code = 278;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kY:
-                                        scan_code = 279;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kLeftTrigger:
-                                        scan_code = 280;
-                                        break;
-                                    case RE::BSWin32GamepadDevice::Key::kRightTrigger:
-                                        scan_code = 281;
-                                        break;
-                                    default:
-                                        scan_code = static_cast<uint32_t>(-1);
-                                        break;
-                                }
-                            }
+                            // Get an adjusted scan code
+                            auto scan_code = HelperFunctions::FixCode(button->device.get(), button->GetIDCode());
 
                             // Modifier Key
                             if (scan_code == settings->SPNG_Modifier1)
