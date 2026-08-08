@@ -23,7 +23,8 @@ public:
     static void ShowNotification(std::string msg, bool messageBox = false);
 
     static void StopperCheck(RE::AlchemyItem* pPotion);
-    static bool IsBlacklisted(RE::AlchemyItem* pPotion);
+    static bool IsBlacklisted(RE::AlchemyItem* a_potion);
+    static bool IsBlacklisted(RE::IngredientItem* a_ingredient);
 
     // Player checks
     static bool PlayerIsWerewolf();

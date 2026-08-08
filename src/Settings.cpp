@@ -438,6 +438,9 @@ void Settings::SetupEffects() {
     RE::BGSKeyword* positiveKeyword = dataHandler->LookupForm(RE::FormID(0x0F8A4E), "Skyrim.esm")->As<RE::BGSKeyword>();
     RE::BGSKeyword* negativeKeyword = dataHandler->LookupForm(RE::FormID(0x42509), "Skyrim.esm")->As<RE::BGSKeyword>();
 
+	//==================================
+	// Potion Effects
+	//==================================
 	// Get all effects
 	auto potionList = dataHandler->GetFormArray(RE::FormType::AlchemyItem);
 
@@ -463,7 +466,37 @@ void Settings::SetupEffects() {
 		}
 	}
 
+	//==================================
+	// Ingredient Effects
+	//==================================
+	// Get all ingredients
+	auto ingredientList = dataHandler->GetFormArray(RE::FormType::Ingredient);
+
+	// Loop through all found potion
+	for (auto ingredient : ingredientList) {
+		RE::IngredientItem* foundIngredient = ingredient->As<RE::IngredientItem>();
+
+		// Dont process the ingredient effects if its blacklisted
+		if (utility->IsBlacklisted(foundIngredient))
+			continue;
+
+		// Loop through all of the effects
+		for (auto& foundEffect : foundIngredient->effects) {
+			std::string sEffect = foundEffect->baseEffect->GetFullName();
+
+			if (foundEffect->baseEffect->HasKeyword(negativeKeyword)) {
+				if (!(std::find(Negative_Effects.begin(), Negative_Effects.end(), sEffect) != Negative_Effects.end()))
+					Negative_Effects.push_back(sEffect);
+			} else if (foundEffect->baseEffect->HasKeyword(positiveKeyword)) {
+				if (!(std::find(Positive_Effects.begin(), Positive_Effects.end(), sEffect) != Positive_Effects.end()))
+					Positive_Effects.push_back(sEffect);
+			}
+		}
+	}
+	
+	//==================================
 	// Sort Arrays
+	//==================================
 	Negative_Effects.erase(std::ranges::remove_if(Negative_Effects, [](const std::string& str) { return str.empty(); }).begin(),Negative_Effects.end());
 	std::ranges::sort(Negative_Effects);
 	Positive_Effects.erase(std::ranges::remove_if(Positive_Effects, [](const std::string& str) { return str.empty(); }).begin(),Positive_Effects.end());

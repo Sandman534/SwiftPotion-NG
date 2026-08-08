@@ -66,9 +66,23 @@ void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
     };
 }
 
-bool Utility::IsBlacklisted(RE::AlchemyItem* pPotion) {
+bool Utility::IsBlacklisted(RE::AlchemyItem* a_potion) {
     const auto settings = Settings::GetSingleton();
-    int formid = pPotion->formID;
+    int formid = a_potion->formID;
+
+    if (settings->blacklistForms.empty())
+        return false;
+
+    auto it = settings->blacklistForms.find(formid);
+    if (it == settings->blacklistForms.end())
+        return false;
+
+    return true;
+}
+
+bool Utility::IsBlacklisted(RE::IngredientItem* a_ingredient) {
+    const auto settings = Settings::GetSingleton();
+    int formid = a_ingredient->formID;
 
     if (settings->blacklistForms.empty())
         return false;
