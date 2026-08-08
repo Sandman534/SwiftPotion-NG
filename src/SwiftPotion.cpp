@@ -130,22 +130,19 @@ void SwiftPotion::ResistCheck(RE::ActorValue resistVariable) {
         ResistSystemCheck(settings->Resist_Magic);
 }
 
-void SwiftPotion::ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3) {
+void SwiftPotion::ProcessHotkey(const int& a_code, bool a_modifier1, bool a_modifier2, bool a_modifier3) {
     auto utility = Utility::GetSingleton();
     auto settings = Settings::GetSingleton();
 
-    if (_code < 0) return;
-    auto code = static_cast<int>(_code);
-
-    if (settings->Health_Restore.Hotkey == code && settings->Health_Restore.Modifier1 == _modifier1 && settings->Health_Restore.Modifier2 == _modifier2 && settings->Health_Restore.Modifier3 == _modifier3)
+    if (settings->Health_Restore.Hotkey == a_code && settings->Health_Restore.Modifier1 == a_modifier1 && settings->Health_Restore.Modifier2 == a_modifier2 && settings->Health_Restore.Modifier3 == a_modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Health_Restore, settings->Health_Regen, settings->Health_Fortify, "Health");
-    else if (settings->Magicka_Restore.Hotkey == code && settings->Magicka_Restore.Modifier1 == _modifier1 && settings->Magicka_Restore.Modifier2 == _modifier2 && settings->Magicka_Restore.Modifier3 == _modifier3)
+    else if (settings->Magicka_Restore.Hotkey == a_code && settings->Magicka_Restore.Modifier1 == a_modifier1 && settings->Magicka_Restore.Modifier2 == a_modifier2 && settings->Magicka_Restore.Modifier3 == a_modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Magicka_Restore, settings->Magicka_Regen, settings->Magicka_Fortify, "Magicka");
-    else if (settings->Stamina_Restore.Hotkey == code && settings->Stamina_Restore.Modifier1 == _modifier1 && settings->Stamina_Restore.Modifier2 == _modifier2 && settings->Stamina_Restore.Modifier3 == _modifier3)
+    else if (settings->Stamina_Restore.Hotkey == a_code && settings->Stamina_Restore.Modifier1 == a_modifier1 && settings->Stamina_Restore.Modifier2 == a_modifier2 && settings->Stamina_Restore.Modifier3 == a_modifier3)
         UsePotionAutoHotkey(utility->GetPlayer(), settings->Stamina_Restore, settings->Stamina_Regen, settings->Stamina_Fortify, "Stamina");
     else {
         for (PotionData hotkeyData : settings->HotkeyRecords) {
-            if (hotkeyData.Hotkey == code && hotkeyData.Modifier1 == _modifier1 && hotkeyData.Modifier2 == _modifier2 && hotkeyData.Modifier3 == _modifier3) {
+            if (hotkeyData.Hotkey == a_code && hotkeyData.Modifier1 == a_modifier1 && hotkeyData.Modifier2 == a_modifier2 && hotkeyData.Modifier3 == a_modifier3) {
 				UsePotion(utility->GetPlayer(), hotkeyData, true, {});
             }
         }

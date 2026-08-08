@@ -7,7 +7,7 @@ static float lastTime;
 class SwiftPotion {
     public:
         static bool InstallUpdateHook();
-        static void ProcessHotkey(const uint32_t& _code, bool _modifier1, bool _modifier2, bool _modifier3);
+        static void ProcessHotkey(const int& a_code, bool a_modifier1, bool a_modifier2, bool a_modifier3);
         static void ResistCheck(RE::ActorValue resistVariable);
 
     protected:

@@ -90,9 +90,7 @@ public:
                                 continue;
 
                             auto device = button->device.get();
-                            auto scan_code = button->GetIDCode();
-                            if (scan_code < 0) return RE::BSEventNotifyControl::kContinue;
-                            auto code = static_cast<int>(scan_code);
+                            auto scan_code = static_cast<int>(button->GetIDCode());
 
                             if (device == RE::INPUT_DEVICE::kMouse)
                                 scan_code += 256;
@@ -154,11 +152,11 @@ public:
                             }
 
                             // Modifier Key
-                            if (code == settings->SPNG_Modifier1)
+                            if (scan_code == settings->SPNG_Modifier1)
                                 isModifier1 = button->IsPressed();
-                            else if (code == settings->SPNG_Modifier2)
+                            else if (scan_code == settings->SPNG_Modifier2)
                                 isModifier2 = button->IsPressed();
-                            else if (code == settings->SPNG_Modifier3)
+                            else if (scan_code == settings->SPNG_Modifier3)
                                 isModifier3 = button->IsPressed();
 
                             // Dont activate on button up
