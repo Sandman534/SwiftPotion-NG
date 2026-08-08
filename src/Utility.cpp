@@ -1,7 +1,7 @@
 #include "Utility.h"
 #include "Settings.h"
 
-void StopperCheck(RE::AlchemyItem* pPotion) {
+void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
     const auto settings = Settings::GetSingleton();
 
     for (auto& eEffect : pPotion->effects) {

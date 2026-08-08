@@ -1,9 +1,5 @@
 #pragma once
 
-namespace {
-    static void StopperCheck(RE::AlchemyItem* pPotion);
-}
-
 class Utility {
 public:
     RE::TESRace* raceVampireLord;
@@ -37,4 +33,6 @@ public:
     bool PlayerIsAlive();
     float GetPlayerAttribute(int iAttribute);
     float GetPlayerDifference(int iAttribute);
+
+    static void StopperCheck(RE::AlchemyItem* pPotion);
 };

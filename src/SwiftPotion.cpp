@@ -4,7 +4,7 @@
 #include "Settings.h"
 
 std::int32_t SwiftPotion::OnUpdate() {
-    if (!Utility::GetUI()->GameIsPaused()) {
+    if (!Utility::GetSingleton()->GetUI()->GameIsPaused()) {
         if (g_deltaTime > 0) {
             lastTime += g_deltaTime;
             if (lastTime >= 1.0f) {
@@ -52,7 +52,7 @@ void SwiftPotion::SwiftPotionLoopUpdate() {
 
 std::unordered_set<RE::FormID> SwiftPotion::GetActiveEffects(std::string sEffect) {
     auto utility = Utility::GetSingleton();
-    RE::Actor* aPlayer = Utility::GetPlayer();
+    RE::Actor* aPlayer = utility->GetPlayer();
     std::unordered_set<RE::FormID> activeForms;
 
     // Check to see if the player has the effect listed
@@ -83,7 +83,7 @@ void SwiftPotion::AutoSystemCheck(PotionData &SystemData) {
 
 void SwiftPotion::CureSystemCheck(PotionData &cureData) {
     auto utility = Utility::GetSingleton();
-    RE::Actor* aPlayer = Utility::GetPlayer();
+    RE::Actor* aPlayer = utility->GetPlayer();
 
     // Return if no data found
     if (!cureData.Enabled || cureData.Stopper) return;
@@ -106,7 +106,7 @@ void SwiftPotion::CureSystemCheck(PotionData &cureData) {
 
 void SwiftPotion::ResistSystemCheck(PotionData &resistData) {
     auto utility = Utility::GetSingleton();
-    RE::Actor* aPlayer = Utility::GetPlayer();
+    RE::Actor* aPlayer = utility->GetPlayer();
 
     // Conditional Checks
     if (!resistData.Enabled || resistData.Stopper) return;
@@ -206,6 +206,7 @@ void SwiftPotion::UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreDat
 
 SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionData &SystemData, const std::unordered_set<RE::FormID> &activeForms) {
     auto utility = Utility::GetSingleton();
+    auto setting = Settings::GetSingleton();
 
     // Set up local variables
     RE::AlchemyItem* pFinalPotion = nullptr;
@@ -226,7 +227,7 @@ SwiftPotion::foundPotionData SwiftPotion::GetPotion(RE::Actor* aPlayer, PotionDa
             RE::AlchemyItem* pPotion = item->As<RE::AlchemyItem>();
 
             // If the potion doesnt meet our requirements
-            if ((pPotion->IsFood() && !SystemData.UseFood) || (pPotion->IsPoison() && !SystemData.Poison) || utility->IsBlacklisted(pPotion))
+            if ((pPotion->IsFood() && !SystemData.UseFood) || (pPotion->IsPoison() && !SystemData.Poison) || setting->IsBlacklisted(pPotion->formID))
                 continue;
 
             // Loop through all of the magic effects on the potion
