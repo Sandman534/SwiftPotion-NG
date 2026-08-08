@@ -1,5 +1,9 @@
 #pragma once
 
+namespace {
+    static void StopperCheck(RE::AlchemyItem* pPotion);
+}
+
 class Utility {
 public:
     RE::TESRace* raceVampireLord;
@@ -17,24 +21,20 @@ public:
 
     static Utility* GetSingleton();
 
-    static RE::PlayerCharacter* GetPlayer();
-    static RE::UI* GetUI();
-    static RE::MenuControls* GetMenuControls();
-    static void ShowNotification(std::string msg, bool messageBox = false);
-
-    static void StopperCheck(RE::AlchemyItem* pPotion);
-    static bool IsBlacklisted(RE::AlchemyItem* a_potion);
-    static bool IsBlacklisted(RE::IngredientItem* a_ingredient);
+    RE::PlayerCharacter* GetPlayer();
+    RE::UI* GetUI();
+    RE::MenuControls* GetMenuControls();
+    void ShowNotification(std::string msg, bool messageBox = false);
 
     // Player checks
-    static bool PlayerIsWerewolf();
-    static bool PlayerIsVampireLord();
-    static bool PlayerIsLich();
-    static bool IsPlayerInBrawl();
-    static bool IsPlayerInDialogue();
+    bool PlayerIsWerewolf();
+    bool PlayerIsVampireLord();
+    bool PlayerIsLich();
+    bool IsPlayerInBrawl();
+    bool IsPlayerInDialogue();
 
     // Attribute Functions
-    static bool PlayerIsAlive();
-    static float GetPlayerAttribute(int iAttribute);
-    static float GetPlayerDifference(int iAttribute);
+    bool PlayerIsAlive();
+    float GetPlayerAttribute(int iAttribute);
+    float GetPlayerDifference(int iAttribute);
 };

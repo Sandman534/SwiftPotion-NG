@@ -108,6 +108,8 @@ public:
 	void SetupEffects();
 	void DefaultAutoData(PotionData &SystemData, std::string sType, std::string sEffectName);
 
+    bool IsBlacklisted(RE::FormID a_form);
+
 private:
 	void SetExtra(PotionData &SystemData, std::string effectName, int iAttribute);
 

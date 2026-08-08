@@ -1,35 +1,7 @@
 #include "Utility.h"
 #include "Settings.h"
 
-Utility* Utility::GetSingleton() {
-    static Utility playerStatus;
-    return &playerStatus;
-}
-
-RE::PlayerCharacter* Utility::GetPlayer() {
-    REL::Relocation<RE::NiPointer<RE::PlayerCharacter>*> singleton{Utility::GetSingleton()->PlayerSingletonAddress};
-    return singleton->get();
-}
-
-RE::UI* Utility::GetUI() {
-    REL::Relocation<RE::NiPointer<RE::UI>*> singleton{Utility::GetSingleton()->UISingletonAddress};
-    return singleton->get();
-}
-
-RE::MenuControls* Utility::GetMenuControls() {
-    REL::Relocation<RE::NiPointer<RE::MenuControls>*> singleton{
-        Utility::GetSingleton()->MenuControlsSingletonAddress};
-    return singleton->get();
-}
-
-void Utility::ShowNotification(std::string msg, bool messageBox) {
-    if (messageBox)
-        RE::DebugMessageBox(msg.c_str());
-    else
-        RE::DebugNotification(msg.c_str());
-}
-
-void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
+void StopperCheck(RE::AlchemyItem* pPotion) {
     const auto settings = Settings::GetSingleton();
 
     for (auto& eEffect : pPotion->effects) {
@@ -66,69 +38,63 @@ void Utility::StopperCheck(RE::AlchemyItem* pPotion) {
     };
 }
 
-bool Utility::IsBlacklisted(RE::AlchemyItem* a_potion) {
-    const auto settings = Settings::GetSingleton();
-    int formid = a_potion->formID;
-
-    if (settings->blacklistForms.empty())
-        return false;
-
-    auto it = settings->blacklistForms.find(formid);
-    if (it == settings->blacklistForms.end())
-        return false;
-
-    return true;
+Utility* Utility::GetSingleton() {
+    static Utility playerStatus;
+    return &playerStatus;
 }
 
-bool Utility::IsBlacklisted(RE::IngredientItem* a_ingredient) {
-    const auto settings = Settings::GetSingleton();
-    int formid = a_ingredient->formID;
+RE::PlayerCharacter* Utility::GetPlayer() {
+    REL::Relocation<RE::NiPointer<RE::PlayerCharacter>*> singleton{ PlayerSingletonAddress };
+    return singleton->get();
+}
 
-    if (settings->blacklistForms.empty())
-        return false;
+RE::UI* Utility::GetUI() {
+    REL::Relocation<RE::NiPointer<RE::UI>*> singleton{ UISingletonAddress };
+    return singleton->get();
+}
 
-    auto it = settings->blacklistForms.find(formid);
-    if (it == settings->blacklistForms.end())
-        return false;
+RE::MenuControls* Utility::GetMenuControls() {
+    REL::Relocation<RE::NiPointer<RE::MenuControls>*> singleton{ MenuControlsSingletonAddress };
+    return singleton->get();
+}
 
-    return true;
+void Utility::ShowNotification(std::string msg, bool messageBox) {
+    if (messageBox)
+        RE::DebugMessageBox(msg.c_str());
+    else
+        RE::DebugNotification(msg.c_str());
 }
 
 // Player checks
 bool Utility::PlayerIsWerewolf() {
-    auto utility = Utility::GetSingleton();
-    return utility->GetPlayer()->GetRace() == utility->raceWerewolf;
+    return GetPlayer()->GetRace() == raceWerewolf;
 }
 
 bool Utility::PlayerIsVampireLord() {
-    auto utility = Utility::GetSingleton();
-    return utility->GetPlayer()->GetRace() == utility->raceVampireLord;
+    return GetPlayer()->GetRace() == raceVampireLord;
 }
 
 bool Utility::PlayerIsLich() {
-    auto util = Utility::GetSingleton();
-    if (util->Undeath_LichPerk)
-        return GetPlayer()->HasPerk(util->Undeath_LichPerk);
+    if (Undeath_LichPerk)
+        return GetPlayer()->HasPerk(Undeath_LichPerk);
     else
         return false;
 }
 
 bool Utility::IsPlayerInBrawl() {
-    auto util = Utility::GetSingleton();
-
-    if (util->BrawlQuest->currentStage <= 0 || util->BrawlQuest->currentStage >= 250)
+    if (BrawlQuest->currentStage <= 0 || BrawlQuest->currentStage >= 250)
         return false;
     else
         return true;
 }
 
 bool Utility::IsPlayerInDialogue() {
-    return Utility::GetSingleton()->GetUI()->IsMenuOpen(RE::DialogueMenu::MENU_NAME);
+    return GetUI()->IsMenuOpen(RE::DialogueMenu::MENU_NAME);
 }
 
 // Attribute Functions
 bool Utility::PlayerIsAlive() {
-    return (Utility::GetSingleton()->GetPlayer()->AsActorValueOwner()->GetActorValue(RE::ActorValue::kHealth) > 0);
+    return (GetPlayer()->AsActorValueOwner()->GetActorValue(RE::ActorValue::kHealth) > 0);
 }
 
 float Utility::GetPlayerAttribute(int iAttribute) {

@@ -431,6 +431,17 @@ std::string Settings::HotkeyString(int iNum, std::string sName) {
 		return s + "_" + sName;
 }
 
+bool Settings::IsBlacklisted(RE::FormID a_form) {
+    if (blacklistForms.empty())
+        return false;
+
+    auto it = blacklistForms.find(a_form);
+    if (it == blacklistForms.end())
+        return false;
+
+    return true;
+}
+
 void Settings::SetupEffects() {
 	// Get Alchemy Keywords
 	auto utility = Utility::GetSingleton();
@@ -449,7 +460,7 @@ void Settings::SetupEffects() {
 		RE::AlchemyItem* foundPotion = potion->As<RE::AlchemyItem>();
 
 		// Dont process the potions effects if its blacklisted
-		if (utility->IsBlacklisted(foundPotion))
+		if (IsBlacklisted(foundPotion->formID))
 			continue;
 
 		// Loop through all of the effects
@@ -477,7 +488,7 @@ void Settings::SetupEffects() {
 		RE::IngredientItem* foundIngredient = ingredient->As<RE::IngredientItem>();
 
 		// Dont process the ingredient effects if its blacklisted
-		if (utility->IsBlacklisted(foundIngredient))
+		if (IsBlacklisted(foundIngredient->formID))
 			continue;
 
 		// Loop through all of the effects
@@ -493,7 +504,7 @@ void Settings::SetupEffects() {
 			}
 		}
 	}
-	
+
 	//==================================
 	// Sort Arrays
 	//==================================

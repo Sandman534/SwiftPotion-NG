@@ -22,7 +22,7 @@ public:
         auto alchemyItem = RE::TESForm::LookupByID<RE::AlchemyItem>(a_event->baseObj);
 
         if (alchemyItem && !alchemyItem->IsFood())
-            utility->StopperCheck(alchemyItem);
+            StopperCheck(alchemyItem);
 
         return RE::BSEventNotifyControl::kContinue;
     }
