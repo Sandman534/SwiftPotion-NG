@@ -2,6 +2,9 @@
 #include "SwiftPotion.h"
 #include "Utility.h"
 #include "Settings.h"
+#include "Translation.h"
+
+using Translation::Translate;
 
 std::int32_t SwiftPotion::OnUpdate() {
     if (!Utility::GetSingleton()->GetUI()->GameIsPaused()) {
@@ -165,9 +168,9 @@ void SwiftPotion::UsePotion(RE::Actor* aPlayer, PotionData &SystemData, bool bHo
 
     // Display notification if turned on
     if (!pPotion.potion && !pPotion.foundPotion && settings->SPNG_Notifications && !SystemData.Poison)
-    	utility->ShowNotification("You have no " + SystemData.EffectName + " potions");
+        utility->ShowNotification(std::vformat(Translate("Notification.NoPotions"), std::make_format_args(SystemData.EffectName)));
     else if (!pPotion.potion && !pPotion.foundPotion && settings->SPNG_Notifications && SystemData.Poison)
-    	utility->ShowNotification("You have no " + SystemData.EffectName + " poisons");
+        utility->ShowNotification(std::vformat(Translate("Notification.NoPoisons"), std::make_format_args(SystemData.EffectName)));
 }
 
 void SwiftPotion::UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreData, PotionData &RegenData, PotionData &FortifyData, std::string EffectName) {
@@ -182,7 +185,7 @@ void SwiftPotion::UsePotionAutoHotkey(RE::Actor* aPlayer, PotionData &RestoreDat
 
     // Display notification if turned on
     if (!restorePotion.potion && !regenPotion.potion && !fortifyPotion.potion && settings->SPNG_Notifications) {
-    	utility->ShowNotification("You have no " + EffectName + " effect potions");
+    	utility->ShowNotification(std::vformat(Translate("Notification.NoEffectPotions"), std::make_format_args(EffectName)));
         return;
     }
 
