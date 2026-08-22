@@ -8,13 +8,6 @@
 # folders
 build/
 vs*/
-lib/
-simpleini/
-fmt/
-xbyak/
-view/
-sksemenuframework/
-json/
 
 # files
 *.zip

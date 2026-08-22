@@ -60,9 +60,9 @@ RE::MenuControls* Utility::GetMenuControls() {
 
 void Utility::ShowNotification(std::string msg, bool messageBox) {
     if (messageBox)
-        RE::DebugMessageBox(msg.c_str());
+        RE::SendHUDMessage::ShowHUDMessage(msg.c_str());
     else
-        RE::DebugNotification(msg.c_str());
+        RE::SendHUDMessage::ShowHUDMessage(msg.c_str());
 }
 
 // Player checks
